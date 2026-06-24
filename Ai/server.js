@@ -50,55 +50,45 @@ app.post('/api/contact', async (req, res) => {
         const name = body.name || '未填';
         const company = body.company || '未填';
         const phone = body.phone || '--';
+        const interest = body.interest || '未选择';
+        const position = body.position || '--';
+        const email = body.email || '--';
+        const message = body.message || '无';
 
         // Generate lead ID & persist
         const leadId = 'L' + Date.now().toString(36).toUpperCase();
         leads[leadId] = { id: leadId, name, company, phone, time, status: '待处理' };
         saveLeads();
 
-        // template_card text_notice — 带状态标记按钮
-        const payload = {
-            msgtype: 'template_card',
-            template_card: {
-                card_type: 'text_notice',
-                source: {
-                    icon_url: 'https://wework.qpic.cn/wwpic/252813_jOfDHtcISzuodLa_1629280209/0',
-                    desc: '云科网数 · 官网咨询',
-                    desc_color: 2
-                },
-                main_title: {
-                    title: `${name} ｜ ${company}`,
-                    desc: time
-                },
-                emphasis_content: {
-                    title: body.interest || '未选择',
-                    desc: '关注方向'
-                },
-                quote_area: {
-                    type: 0,
-                    quote_text: body.message || '暂无具体需求描述'
-                },
-                horizontal_content_list: [
-                    { keyname: '职位', value: body.position || '--' },
-                    { keyname: '电话', value: phone },
-                    { keyname: '邮箱', value: body.email || '--' }
-                ],
-                jump_list: [
-                    { type: 1, title: '✅ 标记已联系', url: 'http://146.56.231.87/api/lead/contacted?id=' + leadId },
-                    { type: 1, title: '🎯 标记已完成', url: 'http://146.56.231.87/api/lead/done?id=' + leadId },
-                    { type: 1, title: '查看官网', url: 'https://www.yunkct.com' }
-                ],
-                card_action: {
-                    type: 1,
-                    url: 'https://www.yunkct.com'
-                }
-            }
-        };
+        // markdown_v2 — 表格排版，干净专业
+        const md = [
+            `# 官网新咨询`,
+            ``,
+            `| 字段 | 详情 |`,
+            `| :--- | :--- |`,
+            `| 客户 | **${name}** |`,
+            `| 公司 | **${company}** |`,
+            `| 职位 | ${position} |`,
+            `| 电话 | ${phone} |`,
+            `| 邮箱 | ${email} |`,
+            `| 关注方向 | ${interest} |`,
+            ``,
+            `### 需求描述`,
+            `> ${message}`,
+            ``,
+            `---`,
+            `[✅ 标记已联系](http://146.56.231.87/api/lead/contacted?id=${leadId})　[🎯 标记已完成](http://146.56.231.87/api/lead/done?id=${leadId})`,
+            ``,
+            `提交时间：${time}`,
+        ].join('\n');
 
         const r = await fetch(WX_WEBHOOK, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({
+                msgtype: 'markdown_v2',
+                markdown_v2: { content: md }
+            })
         });
 
         const result = await r.json();
@@ -122,8 +112,3 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`Contact API: POST /api/contact`);
 });
-
-// 如果使用 PM2 管理进程：
-//   npm install -g pm2
-//   pm2 start server.js --name ykwsc-api
-//   pm2 save && pm2 startup
