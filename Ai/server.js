@@ -1,32 +1,46 @@
 /**
  * 云科网数官网 - 后端代理服务
- *
- * 用途：解决浏览器 CORS 限制，作为中间层代理转发企业微信 Webhook 请求。
- * 部署到腾讯云服务器后，将 index.html 中的 WX_WORKERS 改为 '/api/contact' 即可。
- *
- * 启动方式：
- *   1. 安装依赖：npm install express
- *   2. 启动服务：node server.js
- *   3. 默认端口 3000，可通过 PORT 环境变量修改
- *
- * 部署建议（腾讯云）：
- *   1. 上传整个 Ai/ 目录到服务器
- *   2. 安装 Node.js 和 npm
- *   3. cd Ai && npm install express && node server.js
- *   4. 配置 Nginx 反向代理（可选，推荐）
  */
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// Parse JSON body
 app.use(express.json());
 
-// WeChat webhook key (server-side, never exposed to browser)
 const WX_KEY = '8d8dcf3c-8a04-4fc1-aede-d24f79f491fc';
 const WX_WEBHOOK = `https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=${WX_KEY}`;
+
+// Lead tracking — simple JSON file store
+const LEADS_FILE = path.join(__dirname, 'leads.json');
+let leads = {};
+try { leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf8')); } catch (_) {}
+
+function saveLeads() { fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2)); }
+
+// Status tracking endpoint
+app.get('/api/lead/contacted', (req, res) => {
+    const id = req.query.id;
+    if (id && leads[id]) {
+        leads[id].status = '已联系';
+        leads[id].contactedAt = new Date().toISOString();
+        saveLeads();
+        console.log(`Lead ${id} marked as contacted`);
+    }
+    res.send(`<!DOCTYPE html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><style>*{margin:0;padding:0;box-sizing:border-box}body{display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:-apple-system,"Microsoft YaHei",sans-serif;background:#f0f6ff;color:#1a5fb4}.card{text-align:center;padding:48px 32px;background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(26,95,180,.12);max-width:360px;margin:16px}.icon{font-size:56px;margin-bottom:16px}.card h2{font-size:20px;margin-bottom:8px}.card p{color:#666;font-size:14px;margin-bottom:24px}.card a{display:inline-block;padding:10px 28px;background:#1a5fb4;color:#fff;border-radius:8px;text-decoration:none;font-size:14px}</style><div class="card"><div class="icon">\u2705</div><h2>已标记为「已联系」</h2><p>${leads[id] ? leads[id].name + ' · ' + leads[id].company : ''}</p><a href="javascript:window.close()">关闭页面</a></div>`);
+});
+
+app.get('/api/lead/done', (req, res) => {
+    const id = req.query.id;
+    if (id && leads[id]) {
+        leads[id].status = '已完成';
+        leads[id].doneAt = new Date().toISOString();
+        saveLeads();
+        console.log(`Lead ${id} marked as done`);
+    }
+    res.send(`<!DOCTYPE html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><style>*{margin:0;padding:0;box-sizing:border-box}body{display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:-apple-system,"Microsoft YaHei",sans-serif;background:#f0fff0;color:#2a7d2a}.card{text-align:center;padding:48px 32px;background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(42,125,42,.12);max-width:360px;margin:16px}.icon{font-size:56px;margin-bottom:16px}.card h2{font-size:20px;margin-bottom:8px}.card p{color:#666;font-size:14px;margin-bottom:24px}.card a{display:inline-block;padding:10px 28px;background:#2a7d2a;color:#fff;border-radius:8px;text-decoration:none;font-size:14px}</style><div class="card"><div class="icon">\u2705</div><h2>已标记为「已完成」</h2><p>${leads[id] ? leads[id].name + ' · ' + leads[id].company : ''}</p><a href="javascript:window.close()">关闭页面</a></div>`);
+});
 
 // API proxy endpoint — POST /api/contact
 app.post('/api/contact', async (req, res) => {
@@ -37,7 +51,12 @@ app.post('/api/contact', async (req, res) => {
         const company = body.company || '未填';
         const phone = body.phone || '--';
 
-        // template_card text_notice — 企业微信原生卡片，高级感拉满
+        // Generate lead ID & persist
+        const leadId = 'L' + Date.now().toString(36).toUpperCase();
+        leads[leadId] = { id: leadId, name, company, phone, time, status: '待处理' };
+        saveLeads();
+
+        // template_card text_notice — 带状态标记按钮
         const payload = {
             msgtype: 'template_card',
             template_card: {
@@ -65,6 +84,8 @@ app.post('/api/contact', async (req, res) => {
                     { keyname: '邮箱', value: body.email || '--' }
                 ],
                 jump_list: [
+                    { type: 1, title: '✅ 标记已联系', url: 'http://146.56.231.87/api/lead/contacted?id=' + leadId },
+                    { type: 1, title: '🎯 标记已完成', url: 'http://146.56.231.87/api/lead/done?id=' + leadId },
                     { type: 1, title: '查看官网', url: 'https://www.yunkct.com' }
                 ],
                 card_action: {
