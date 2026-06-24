@@ -525,77 +525,29 @@ body {
 
 <script>
 /* ============================================
-   联系表单提交 — 企业微信机器人通知
-   通过 Cloudflare Workers 代理解决跨域问题
+   联系表单提交 — 通过服务端代理转发企业微信
+   部署后同域请求，无跨域问题
    ============================================ */
-const WX_WORKERS = 'https://ykwsc-webhook.1634189812.workers.dev/?key=8d8dcf3c-8a04-4fc1-aede-d24f79f491fc';
-const WX_DIRECT  = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=8d8dcf3c-8a04-4fc1-aede-d24f79f491fc';
+const API = '/api/contact';
 
-// 构建企业微信 Markdown 消息体
-function buildWxBody(data) {
-    const time = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
-    const md = `## 官网新咨询
-> 姓名：**${data.name}**
-> 职位：${data.position}
-> 公司：**${data.company}**
-> 电话：${data.phone}
-> 邮箱：${data.email}
-> 关注方向：${data.interest}
-> 需求：${data.message}
-> 时间：${time}`;
-    return JSON.stringify({ msgtype: 'markdown', markdown: { content: md } });
-}
-
-// 方案A：fetch到Workers代理（有VPN/加速器时最快）
-async function tryWorkers(body, timeoutMs) {
+// 提交到服务端代理
+async function submitToWx(data) {
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    const timer = setTimeout(() => ctrl.abort(), 12000);
     try {
-        const r = await fetch(WX_WORKERS, {
+        const r = await fetch(API, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: body,
+            body: JSON.stringify(data),
             signal: ctrl.signal
         });
-        return r.ok;
+        const result = await r.json();
+        return result.success === true;
     } catch(e) {
         return false;
     } finally {
         clearTimeout(timer);
     }
-}
-
-// 方案B：no-cors直连 + 超时保护（不读响应，但能确保消息送达）
-function tryNoCors(body, timeoutMs) {
-    return new Promise((resolve) => {
-        // 超时兜底：防止无VPN时TCP连接挂死
-        const timer = setTimeout(() => resolve(false), timeoutMs);
-        fetch(WX_WORKERS, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain' },
-            body: body
-        }).then(() => {
-            clearTimeout(timer);
-            resolve(true);
-        }).catch(() => {
-            clearTimeout(timer);
-            resolve(false);
-        });
-    });
-}
-
-// 主提交函数：并发双通道 + 统一超时
-async function submitToWx(data) {
-    const body = buildWxBody(data);
-
-    // Workers(fetch, 12s) + Workers(no-cors, 10s) 并发，任一成功即可
-    const race = await Promise.race([
-        Promise.allSettled([tryWorkers(body, 12000), tryNoCors(body, 10000)]),
-        new Promise(r => setTimeout(() => r([{status:'rejected'}]), 13000)) // 总超时13s
-    ]);
-
-    return race.some(r => r.status === 'fulfilled' && r.value === true);
 }
 
 const form = document.getElementById('contactForm');
