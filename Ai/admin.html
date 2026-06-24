@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>线索管理 — 云科网数</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei","PingFang SC",sans-serif;background:#f5f7fa;color:#1a1a2e;min-height:100vh}
+.header{background:linear-gradient(135deg,#0d3a6e,#1a5fb4);color:#fff;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.header-left{display:flex;align-items:center;gap:16px}
+.header h1{font-size:20px;font-weight:600}
+.header .user-info{display:flex;align-items:center;gap:10px;font-size:13px}
+.header .user-info .role-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.role-tag.admin{background:#ff9800;color:#fff}
+.role-tag.user{background:rgba(255,255,255,.25);color:#fff}
+.btn-logout{padding:4px 12px;background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:4px;font-size:12px;cursor:pointer}
+.btn-logout:hover{background:rgba(255,255,255,.35)}
+.header .stats{display:flex;gap:20px;flex-wrap:wrap}
+.header .stat{text-align:center}
+.header .stat .num{font-size:24px;font-weight:700}
+.header .stat .label{font-size:12px;opacity:.75;margin-top:2px}
+.container{max-width:1400px;margin:0 auto;padding:20px}
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px}
+.toolbar .count{color:#666;font-size:14px}
+.toolbar .filters{display:flex;gap:8px;flex-wrap:wrap}
+.filters select,.filters input{padding:6px 12px;border:1px solid #d0d5dd;border-radius:6px;font-size:13px;background:#fff;color:#333;outline:none}
+.filters select:focus,.filters input:focus{border-color:#1a5fb4;box-shadow:0 0 0 2px rgba(26,95,180,.15)}
+.btn-refresh{padding:6px 16px;background:#1a5fb4;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer}
+.btn-refresh:hover{background:#1552a0}
+.table-wrap{overflow-x:auto;background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+table{width:100%;border-collapse:collapse;min-width:1140px;font-size:13px}
+thead{background:#f8f9fb}
+th{padding:12px 14px;text-align:left;font-weight:600;color:#555;font-size:12px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e8eaed;white-space:nowrap}
+td{padding:10px 14px;border-bottom:1px solid #f0f2f5;vertical-align:middle}
+tr:hover{background:#f8faff}
+tr:nth-child(even){background:#fafbfc}
+tr:nth-child(even):hover{background:#f0f4ff}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:500;white-space:nowrap}
+.badge-pending{background:#fff3e0;color:#e65100}
+.badge-contacted{background:#e3f2fd;color:#0d47a1}
+.badge-quoted{background:#f3e5f5;color:#6a1b9a}
+.badge-deal{background:#e8f5e9;color:#2e7d32}
+.badge-lost{background:#fce4ec;color:#c62828}
+.progress-input,.notes-input{width:100%;padding:5px 8px;border:1px solid transparent;border-radius:4px;font-size:12px;background:transparent;transition:.15s}
+.progress-input:hover,.notes-input:hover{border-color:#d0d5dd}
+.progress-input:focus,.notes-input:focus{border-color:#1a5fb4;outline:none;background:#fff;box-shadow:0 0 0 2px rgba(26,95,180,.1)}
+.editable-cell{display:block;width:140px;padding:6px 10px;border-radius:6px;font-size:12px;cursor:pointer;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:#f9fafb;border:1px solid #e5e7eb;transition:.15s}
+.editable-cell:hover{background:#eff6ff;border-color:#1a5fb4;color:#1a1a2e}
+.editable-cell:empty::before{content:attr(data-placeholder);color:#bbb}
+.status-select{padding:4px 8px;border:1px solid #d0d5dd;border-radius:4px;font-size:12px;background:#fff;cursor:pointer;outline:none}
+.status-select:focus{border-color:#1a5fb4}
+.msg-cell{max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;color:#333}
+.msg-cell:hover{color:#1a5fb4}
+.actions{display:flex;gap:4px}
+.btn-save{padding:4px 10px;background:#1a5fb4;color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer;white-space:nowrap}
+.btn-save:hover{background:#1552a0}
+.btn-delete{padding:4px 10px;background:#c62828;color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer;white-space:nowrap}
+.btn-delete:hover{background:#b71c1c}
+.toast{position:fixed;top:20px;right:20px;padding:12px 20px;border-radius:8px;color:#fff;font-size:14px;z-index:999;opacity:0;transform:translateY(-10px);transition:.25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast-success{background:#2e7d32}
+.toast-error{background:#c62828}
+.empty{text-align:center;padding:60px 20px;color:#999}
+.empty .icon{font-size:48px;margin-bottom:12px}
+.empty p{font-size:14px}
+.login-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:1000}
+.login-box{background:#fff;padding:36px 32px;border-radius:14px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.2);max-width:380px;width:92%}
+.login-box h2{font-size:20px;margin-bottom:4px;color:#1a1a2e}
+.login-box .sub{color:#888;font-size:13px;margin-bottom:24px}
+.login-box .field{margin-bottom:14px;text-align:left}
+.login-box .field label{display:block;font-size:13px;color:#555;margin-bottom:5px}
+.login-box .field input{padding:10px 12px;border:1px solid #d0d5dd;border-radius:8px;font-size:14px;width:100%;outline:none}
+.login-box .field input:focus{border-color:#1a5fb4;box-shadow:0 0 0 3px rgba(26,95,180,.12)}
+.login-box .btn-login{margin-top:6px;padding:11px 0;width:100%;background:#1a5fb4;color:#fff;border:none;border-radius:8px;font-size:15px;cursor:pointer;font-weight:500}
+.login-box .btn-login:hover{background:#1552a0}
+.login-box .err{color:#c62828;font-size:12px;margin-top:10px;display:none}
+.loading{text-align:center;padding:40px;color:#999;font-size:14px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:999}
+.modal-box{background:#fff;padding:28px 24px;border-radius:12px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.15);max-width:380px;width:90%}
+.modal-box h3{font-size:16px;margin-bottom:8px;color:#1a1a2e}
+.modal-box p{color:#666;font-size:13px;margin-bottom:20px;line-height:1.6}
+.modal-box .modal-btns{display:flex;gap:10px;justify-content:center}
+.modal-box .btn-cancel{padding:8px 20px;background:#eee;color:#333;border:none;border-radius:6px;font-size:13px;cursor:pointer}
+.modal-box .btn-confirm{padding:8px 20px;background:#c62828;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer}
+.edit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:1001}
+.edit-box{background:#fff;border-radius:14px;box-shadow:0 16px 48px rgba(0,0,0,.2);width:90%;max-width:680px;max-height:85vh;overflow-y:auto;padding:0}
+.edit-box-header{padding:20px 28px 0;display:flex;align-items:center;justify-content:space-between}
+.edit-box-header h3{font-size:17px;color:#1a1a2e;margin:0}
+.edit-box-header .close-btn{background:none;border:none;font-size:22px;color:#999;cursor:pointer;padding:0;line-height:1}
+.edit-box-header .close-btn:hover{color:#333}
+.edit-box-body{padding:16px 28px}
+.edit-box-body label{display:block;font-size:13px;color:#555;margin-bottom:6px;font-weight:500}
+.edit-box-body textarea{width:100%;min-height:200px;padding:14px 16px;border:1px solid #d0d5dd;border-radius:8px;font-size:14px;line-height:1.8;resize:vertical;outline:none;font-family:inherit;color:#1a1a2e}
+.edit-box-body textarea:focus{border-color:#1a5fb4;box-shadow:0 0 0 3px rgba(26,95,180,.1)}
+.edit-box-body .field-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.edit-box-body .char-count{font-size:12px;color:#999}
+.edit-box-footer{padding:0 28px 20px;display:flex;gap:10px;justify-content:flex-end}
+.edit-box-footer button{padding:9px 24px;border-radius:8px;font-size:14px;cursor:pointer;font-weight:500;border:none}
+.edit-box-footer .btn-edit-cancel{background:#f2f3f5;color:#555}
+.edit-box-footer .btn-edit-cancel:hover{background:#e5e6eb}
+.edit-box-footer .btn-edit-save{background:#1a5fb4;color:#fff}
+.edit-box-footer .btn-edit-save:hover{background:#1552a0}
+@media(max-width:768px){
+  .header{padding:14px 16px}
+  .header h1{font-size:17px}
+  .container{padding:12px}
+  .header .stats{gap:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <h2>线索管理后台</h2>
+    <p class="sub">请输入账号密码登录</p>
+    <div class="field">
+      <label>用户名</label>
+      <input type="text" id="loginUser" placeholder="输入用户名" autocomplete="username">
+    </div>
+    <div class="field">
+      <label>密码</label>
+      <input type="password" id="loginPass" placeholder="输入密码" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-login" onclick="doLogin()">登 录</button>
+    <p class="err" id="loginErr">用户名或密码错误</p>
+  </div>
+</div>
+
+<div class="header" id="mainHeader" style="display:none">
+  <div class="header-left">
+    <h1>线索管理</h1>
+    <div class="user-info">
+      <span id="userName">--</span>
+      <span class="role-tag" id="roleTag">--</span>
+      <button class="btn-logout" onclick="doLogout()">退出</button>
+    </div>
+  </div>
+  <div class="stats" id="statsBar"></div>
+</div>
+
+<div class="container" id="mainContainer" style="display:none">
+  <div class="toolbar">
+    <span class="count" id="countLabel">共 0 条</span>
+    <div class="filters">
+      <select id="filterStatus" onchange="renderTable()">
+        <option value="">全部状态</option>
+        <option value="待联系">待联系</option>
+        <option value="已联系">已联系</option>
+        <option value="已报价">已报价</option>
+        <option value="已成交">已成交</option>
+        <option value="已放弃">已放弃</option>
+      </select>
+      <input type="text" id="filterSearch" placeholder="搜索姓名/公司..." oninput="renderTable()">
+      <button class="btn-refresh" onclick="loadData()">刷新</button>
+    </div>
+  </div>
+
+  <div class="table-wrap" id="tableWrap">
+    <div class="loading">加载中...</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let TOKEN = '';
+let USER = {}; // { username, role, name }
+let leads = [];
+let dirty = {}; // { leadId: { status, progress, notes } }
+let isAdmin = false;
+
+const STATUS_OPTS = ['待联系','已联系','已报价','已成交','已放弃'];
+
+// ---- Login ----
+function doLogin() {
+    const username = document.getElementById('loginUser').value.trim();
+    const password = document.getElementById('loginPass').value.trim();
+    if(!username || !password) return;
+    fetch('/api/login', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({username, password})
+    })
+    .then(r => r.json().then(data => ({ok:r.ok, data})))
+    .then(({ok, data}) => {
+        if(!ok) throw new Error(data.error);
+        TOKEN = data.token;
+        USER = { username: data.username, role: data.role, name: data.name };
+        isAdmin = data.role === 'admin';
+        sessionStorage.setItem('admin_token', TOKEN);
+        sessionStorage.setItem('admin_user', JSON.stringify(USER));
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('mainHeader').style.display = 'flex';
+        document.getElementById('mainContainer').style.display = 'block';
+        showUser();
+        loadData();
+    })
+    .catch(e => {
+        document.getElementById('loginErr').textContent = e.message || '用户名或密码错误';
+        document.getElementById('loginErr').style.display = 'block';
+    });
+}
+
+function doLogout() {
+    fetch('/api/logout', {
+        method:'POST',
+        headers:{'x-auth-token':TOKEN}
+    }).catch(()=>{});
+    TOKEN = ''; USER = {}; leads = []; dirty = {}; isAdmin = false;
+    sessionStorage.clear();
+    document.getElementById('loginOverlay').style.display = 'flex';
+    document.getElementById('mainHeader').style.display = 'none';
+    document.getElementById('mainContainer').style.display = 'none';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+}
+
+// 尝试自动恢复登录
+(function(){
+    const saved = sessionStorage.getItem('admin_token');
+    if(saved) {
+        TOKEN = saved;
+        fetch('/api/session?token='+TOKEN)
+        .then(r => r.json().then(data => ({ok:r.ok, data})))
+        .then(({ok, data}) => {
+            if(!ok) throw new Error();
+            USER = data; isAdmin = data.role === 'admin';
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('mainHeader').style.display = 'flex';
+            document.getElementById('mainContainer').style.display = 'block';
+            showUser(); loadData();
+        }).catch(() => { sessionStorage.clear(); });
+    }
+})();
+
+function showUser() {
+    document.getElementById('userName').textContent = USER.name || USER.username;
+    const tag = document.getElementById('roleTag');
+    if(isAdmin) { tag.textContent = '管理员'; tag.className = 'role-tag admin'; }
+    else { tag.textContent = '成员'; tag.className = 'role-tag user'; }
+}
+
+// ---- Toast ----
+let toastTimer;
+function toast(msg,type) {
+    const el = document.getElementById('toast');
+    el.textContent=msg; el.className='toast toast-'+type+' show';
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>{el.className='toast';},2000);
+}
+
+// ---- Data ----
+async function loadData() {
+    if(!TOKEN) return;
+    document.getElementById('tableWrap').innerHTML='<div class="loading">加载中...</div>';
+    try {
+        const r = await fetch('/api/leads?token='+TOKEN);
+        if(r.status === 401) { doLogout(); return; }
+        if(!r.ok) throw new Error();
+        const data = await r.json();
+        leads = data.leads || [];
+        dirty = {};
+        renderTable();
+    } catch(e) {
+        document.getElementById('tableWrap').innerHTML='<div class="empty"><div class="icon">⚠️</div><p>加载失败，请检查网络或刷新重试</p></div>';
+    }
+}
+
+function renderTable() {
+    const statusFilter = document.getElementById('filterStatus').value;
+    const search = document.getElementById('filterSearch').value.toLowerCase();
+    let filtered = leads;
+    if(statusFilter) filtered = filtered.filter(l => l.status === statusFilter);
+    if(search) filtered = filtered.filter(l => (l.name||'').toLowerCase().includes(search) || (l.company||'').toLowerCase().includes(search));
+    document.getElementById('countLabel').textContent = `共 ${filtered.length} 条`;
+
+    const total = leads.length;
+    const pending = leads.filter(l=>l.status==='待联系').length;
+    const contacted = leads.filter(l=>l.status==='已联系').length;
+    const deal = leads.filter(l=>l.status==='已成交').length;
+    document.getElementById('statsBar').innerHTML = `
+        <div class="stat"><div class="num">${total}</div><div class="label">全部</div></div>
+        <div class="stat"><div class="num" style="color:#ff9800">${pending}</div><div class="label">待联系</div></div>
+        <div class="stat"><div class="num" style="color:#2196f3">${contacted}</div><div class="label">已联系</div></div>
+        <div class="stat"><div class="num" style="color:#4caf50">${deal}</div><div class="label">已成交</div></div>
+    `;
+
+    if(filtered.length === 0) {
+        document.getElementById('tableWrap').innerHTML = '<div class="empty"><div class="icon">📋</div><p>暂无数据</p></div>';
+        return;
+    }
+
+    let html = '<table><thead><tr><th>编号</th><th>时间</th><th>姓名</th><th>公司</th><th>职位</th><th>电话</th><th>关注方向</th><th>需求</th><th>状态</th><th>进度</th><th>备注</th><th>操作</th></tr></thead><tbody>';
+
+    filtered.forEach(l => {
+        const d = dirty[l.id] || {};
+        const status = d.status !== undefined ? d.status : (l.status || '待联系');
+        const progress = d.progress !== undefined ? d.progress : (l.progress || '');
+        const notes = d.notes !== undefined ? d.notes : (l.notes || '');
+        const timeLabel = l.createdAt ? new Date(l.createdAt).toLocaleString('zh-CN') : '--';
+        const isDirty = dirty[l.id] !== undefined;
+
+        html += `<tr${isDirty?' style="background:#fffde7"':''}>
+            <td style="font-family:monospace;font-size:11px;color:#999">${l.id}</td>
+            <td style="white-space:nowrap;font-size:12px">${timeLabel}</td>
+            <td><b>${esc(l.name||'--')}</b></td>
+            <td>${esc(l.company||'--')}</td>
+            <td>${esc(l.position||'--')}</td>
+            <td>${esc(l.phone||'--')}</td>
+            <td><span style="font-size:12px">${esc(l.interest||'--')}</span></td>
+            <td><span class="msg-cell" title="${escAttr(l.message||'')}" onclick="showMsg('${l.id}')">${esc((l.message||'').slice(0,25)+(l.message&&l.message.length>25?'…':''))}</span></td>
+            <td><select class="status-select" data-id="${l.id}" data-field="status" onchange="markDirty(this)">
+                ${STATUS_OPTS.map(s=>`<option value="${s}" ${s===status?'selected':''}>${s}</option>`).join('')}
+            </select></td>
+            <td><span class="editable-cell" data-placeholder="点击填写..." onclick="openEditor('${l.id}','progress','${escAttr(progress)}','进度','${escAttr(l.name)}','${escAttr(l.company)}')">${esc(progress)||''}</span></td>
+            <td><span class="editable-cell" data-placeholder="点击填写..." onclick="openEditor('${l.id}','notes','${escAttr(notes)}','备注','${escAttr(l.name)}','${escAttr(l.company)}')">${esc(notes)||''}</span></td>
+            <td><div class="actions">
+                <button class="btn-save" data-id="${l.id}" onclick="saveOne('${l.id}')" ${isDirty?'':'disabled style="opacity:.4;cursor:default"'}>保存</button>
+                ${isAdmin ? `<button class="btn-delete" onclick="confirmDelete('${l.id}','${escAttr(l.name)}','${escAttr(l.company)}')">删除</button>` : ''}
+            </div></td>
+        </tr>`;
+    });
+
+    html += '</tbody></table>';
+    document.getElementById('tableWrap').innerHTML = html;
+}
+
+function showMsg(id) {
+    const lead = leads.find(l => l.id === id);
+    if(!lead) return;
+    alert('详细需求：\n\n' + (lead.message || '无'));
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escAttr(s) { return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+function markDirty(el) {
+    const id = el.dataset.id;
+    const field = el.dataset.field;
+    if(!dirty[id]) dirty[id] = {};
+    dirty[id][field] = el.value;
+    const btn = document.querySelector(`button.btn-save[data-id="${id}"]`);
+    if(btn){ btn.disabled=false; btn.style.opacity='1'; btn.style.cursor='pointer'; }
+    const row = el.closest('tr');
+    if(row) row.style.background='#fffde7';
+}
+
+async function saveOne(id) {
+    if(!dirty[id]) return;
+    const data = dirty[id];
+    try {
+        const r = await fetch('/api/lead/'+id+'?token='+TOKEN, {
+            method:'PUT',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(data)
+        });
+        if(!r.ok) throw new Error();
+        const result = await r.json();
+        const idx = leads.findIndex(l=>l.id===id);
+        if(idx>=0) Object.assign(leads[idx], result.lead);
+        delete dirty[id];
+        toast('保存成功','success');
+        renderTable();
+    } catch(e) {
+        toast('保存失败，请重试','error');
+    }
+}
+
+function confirmDelete(id, name, company) {
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.innerHTML = `<div class="modal-box">
+        <h3>确认删除</h3>
+        <p>确定要删除 <b>${name} · ${company}</b> 的线索吗？<br>此操作不可恢复。</p>
+        <div class="modal-btns">
+            <button class="btn-cancel" id="cancelDel">取消</button>
+            <button class="btn-confirm" id="confirmDel">确认删除</button>
+        </div>
+    </div>`;
+    document.body.appendChild(overlay);
+    document.getElementById('cancelDel').onclick = () => overlay.remove();
+    document.getElementById('confirmDel').onclick = async () => {
+        overlay.remove();
+        try {
+            const r = await fetch('/api/lead/'+id+'?token='+TOKEN, { method:'DELETE' });
+            if(!r.ok) throw new Error();
+            toast('已删除','success');
+            loadData();
+        } catch(e) {
+            toast('删除失败','error');
+        }
+    };
+    overlay.onclick = e => { if(e.target===overlay) overlay.remove(); };
+}
+
+// Auto-refresh
+setInterval(loadData, 120000);
+
+// ---- Edit Modal ----
+function openEditor(id, field, currentValue, label, name, company) {
+    const overlay = document.createElement('div');
+    overlay.className = 'edit-overlay';
+    overlay.innerHTML = `<div class="edit-box">
+        <div class="edit-box-header">
+            <h3>编辑${label} — ${esc(name)} · ${esc(company)}</h3>
+            <button class="close-btn" onclick="this.closest('.edit-overlay').remove()">&times;</button>
+        </div>
+        <div class="edit-box-body">
+            <div class="field-meta">
+                <label>${label}内容</label>
+                <span class="char-count" id="editCharCount">0 字</span>
+            </div>
+            <textarea id="editContent" rows="8" placeholder="在此输入${label}...">${(currentValue||'').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
+        </div>
+        <div class="edit-box-footer">
+            <button class="btn-edit-cancel" onclick="this.closest('.edit-overlay').remove()">取消</button>
+            <button class="btn-edit-save" id="editSaveBtn">保存</button>
+        </div>
+    </div>`;
+    document.body.appendChild(overlay);
+
+    const textarea = document.getElementById('editContent');
+    const charCountEl = document.getElementById('editCharCount');
+
+    // init count
+    const updateCount = () => { charCountEl.textContent = textarea.value.length + ' 字'; };
+    updateCount();
+    textarea.addEventListener('input', updateCount);
+
+    // auto focus
+    setTimeout(() => textarea.focus(), 100);
+
+    // save
+    document.getElementById('editSaveBtn').onclick = () => {
+        const newValue = textarea.value;
+        if(!dirty[id]) dirty[id] = {};
+        dirty[id][field] = newValue;
+
+        // update the table cell immediately
+        const progressCell = document.querySelector(`span.editable-cell[onclick*="openEditor('${id}','${field}'"]`);
+        if(progressCell) {
+            progressCell.textContent = newValue || '';
+        }
+
+        // also reflect in leads array for consistency
+        const lead = leads.find(l => l.id === id);
+        if(lead) lead[field] = newValue;
+
+        // enable save button in the row
+        const saveBtn = document.querySelector(`button.btn-save[data-id="${id}"]`);
+        if(saveBtn){ saveBtn.disabled=false; saveBtn.style.opacity='1'; saveBtn.style.cursor='pointer'; }
+
+        const row = saveBtn ? saveBtn.closest('tr') : null;
+        if(row) row.style.background='#fffde7';
+
+        overlay.remove();
+        toast(label + '已更新（请点击保存提交）', 'success');
+    };
+
+    // close on overlay click
+    overlay.addEventListener('click', e => { if(e.target===overlay) overlay.remove(); });
+
+    // Ctrl+Enter to save
+    textarea.addEventListener('keydown', e => {
+        if(e.key === 'Enter' && e.ctrlKey) {
+            document.getElementById('editSaveBtn').click();
+        }
+    });
+}
+</script>
+</body>
+</html>
