@@ -36,32 +36,28 @@ app.post('/api/contact', async (req, res) => {
         const name = body.name || '未填';
         const company = body.company || '未填';
 
-        // Build news article description — markdown supported
-        const desc = [
-            `客户名称：**${body.name || '--'}**`,
-            `职位：${body.position || '--'}`,
-            `公司名称：**${body.company || '--'}**`,
-            `联系电话：${body.phone || '--'}`,
-            `电子邮箱：${body.email || '--'}`,
-            `关注方向：${body.interest || '--'}`,
+        // markdown — 群机器人原生支持，粗体/引用块等基础格式可正常渲染
+        const md = [
+            `**${name}** 在官网提交了咨询`,
             ``,
-            `**需求描述：**`,
+            `> 公司：<font color="info">${company}</font>`,
+            `> 职位：${body.position || '--'}`,
+            `> 电话：${body.phone || '--'}`,
+            `> 邮箱：${body.email || '--'}`,
+            `> 关注：${body.interest || '--'}`,
+            ``,
+            `**需求详情：**`,
             `> ${body.message || '无'}`,
+            ``,
+            `提交时间：${time}`,
         ].join('\n');
 
         const r = await fetch(WX_WEBHOOK, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                msgtype: 'news',
-                news: {
-                    articles: [{
-                        title: `官网咨询 · ${name} · ${company}`,
-                        description: desc,
-                        url: 'https://www.yunkct.com',
-                        picurl: 'https://www.yunkct.com/logo.png'
-                    }]
-                }
+                msgtype: 'markdown',
+                markdown: { content: md }
             })
         });
 
