@@ -5,3 +5,6 @@ Thumbs.db
 # Temp files
 *.tmp
 *.bak
+create_favicon.py
+draw_mflex_topo.py
+.workbuddy/
