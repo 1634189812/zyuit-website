@@ -33,30 +33,34 @@ app.post('/api/contact', async (req, res) => {
     try {
         const body = req.body;
         const time = body.time || new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+        const name = body.name || '未填';
+        const company = body.company || '未填';
 
-        // Build textcard description — clean multi-line format
-        const desc = `<div class="highlight">客户名称：<font color="info">${body.name || '--'}</font></div>
-<div class="highlight">职位：<font color="comment">${body.position || '--'}</font></div>
-<div class="highlight">公司名称：<font color="warning">${body.company || '--'}</font></div>
-<div class="highlight">联系电话：${body.phone || '--'}</div>
-<div class="highlight">电子邮箱：${body.email || '--'}</div>
-<div class="highlight">关注方向：<font color="info">${body.interest || '--'}</font></div>
----
-**需求描述：**
-> ${body.message || '无'} 
----
-提交时间：${time}`;
+        // Build news article description — markdown supported
+        const desc = [
+            `客户名称：**${body.name || '--'}**`,
+            `职位：${body.position || '--'}`,
+            `公司名称：**${body.company || '--'}**`,
+            `联系电话：${body.phone || '--'}`,
+            `电子邮箱：${body.email || '--'}`,
+            `关注方向：${body.interest || '--'}`,
+            ``,
+            `**需求描述：**`,
+            `> ${body.message || '无'}`,
+        ].join('\n');
 
         const r = await fetch(WX_WEBHOOK, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                msgtype: 'textcard',
-                textcard: {
-                    title: `官网咨询 · ${body.name || '新客户'} · ${body.company || '未填公司'}`,
-                    description: desc,
-                    url: 'https://www.yunkct.com',
-                    btntxt: '查看官网'
+                msgtype: 'news',
+                news: {
+                    articles: [{
+                        title: `官网咨询 · ${name} · ${company}`,
+                        description: desc,
+                        url: 'https://www.yunkct.com',
+                        picurl: 'https://www.yunkct.com/logo.png'
+                    }]
                 }
             })
         });
