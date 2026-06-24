@@ -32,22 +32,32 @@ const WX_WEBHOOK = `https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=${WX_KE
 app.post('/api/contact', async (req, res) => {
     try {
         const body = req.body;
-        const markdownContent = `## 官网新咨询
-> 姓名：**${body.name || '未填'}**
-> 职位：${body.position || '未填'}
-> 公司：**${body.company || '未填'}**
-> 电话：${body.phone || '未填'}
-> 邮箱：${body.email || '未填'}
-> 关注方向：${body.interest || '未填'}
-> 需求：${body.message || '未填'}
-> 时间：${body.time || new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })}`;
+        const time = body.time || new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+
+        // Build textcard description — clean multi-line format
+        const desc = `<div class="highlight">客户名称：<font color="info">${body.name || '--'}</font></div>
+<div class="highlight">职位：<font color="comment">${body.position || '--'}</font></div>
+<div class="highlight">公司名称：<font color="warning">${body.company || '--'}</font></div>
+<div class="highlight">联系电话：${body.phone || '--'}</div>
+<div class="highlight">电子邮箱：${body.email || '--'}</div>
+<div class="highlight">关注方向：<font color="info">${body.interest || '--'}</font></div>
+---
+**需求描述：**
+> ${body.message || '无'} 
+---
+提交时间：${time}`;
 
         const r = await fetch(WX_WEBHOOK, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                msgtype: 'markdown',
-                markdown: { content: markdownContent }
+                msgtype: 'textcard',
+                textcard: {
+                    title: `官网咨询 · ${body.name || '新客户'} · ${body.company || '未填公司'}`,
+                    description: desc,
+                    url: 'https://www.yunkct.com',
+                    btntxt: '查看官网'
+                }
             })
         });
 
