@@ -50,25 +50,47 @@ app.post('/api/contact', async (req, res) => {
         const name = body.name || '未填';
         const company = body.company || '未填';
         const phone = body.phone || '--';
+        const interest = body.interest || '未选择';
+        const msgText = body.message || '无';
+        // 需求首行作为 emphasis（最多10字），完整需求放字段列表
+        const msgShort = msgText.length > 10 ? msgText.slice(0, 10) + '…' : msgText;
 
-        // markdown_v2 — 紧凑纯文字，无跳转按钮
-        const md = [
-            `**${name}** · ${company} · ${phone}`,
-            ``,
-            `职位：${body.position || '--'}｜邮箱：${body.email || '--'}｜关注：${body.interest || '未选择'}`,
-            ``,
-            `> ${body.message || '无'}`,
-            ``,
-            `提交时间：${time}`,
-        ].join('\n');
+        // template_card — 简洁卡片，关注方向用普通字号，需求用正色
+        const payload = {
+            msgtype: 'template_card',
+            template_card: {
+                card_type: 'text_notice',
+                source: {
+                    icon_url: 'https://wework.qpic.cn/wwpic/252813_jOfDHtcISzuodLa_1629280209/0',
+                    desc: '云科网数 · 官网咨询',
+                    desc_color: 2
+                },
+                main_title: {
+                    title: `${name} ｜ ${company}`,
+                    desc: time
+                },
+                emphasis_content: {
+                    title: msgShort,
+                    desc: '需求摘要'
+                },
+                horizontal_content_list: [
+                    { keyname: '电话', value: phone },
+                    { keyname: '职位', value: body.position || '--' },
+                    { keyname: '邮箱', value: body.email || '--' },
+                    { keyname: '关注方向', value: interest },
+                    { keyname: '详细需求', value: msgText }
+                ],
+                card_action: {
+                    type: 1,
+                    url: 'https://www.yunkct.com'
+                }
+            }
+        };
 
         const r = await fetch(WX_WEBHOOK, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                msgtype: 'markdown_v2',
-                markdown_v2: { content: md }
-            })
+            body: JSON.stringify(payload)
         });
 
         const result = await r.json();
