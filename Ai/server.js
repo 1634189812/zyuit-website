@@ -35,30 +35,49 @@ app.post('/api/contact', async (req, res) => {
         const time = body.time || new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
         const name = body.name || '未填';
         const company = body.company || '未填';
+        const phone = body.phone || '--';
 
-        // markdown — 群机器人原生支持，粗体/引用块等基础格式可正常渲染
-        const md = [
-            `**${name}** 在官网提交了咨询`,
-            ``,
-            `> 公司：<font color="info">${company}</font>`,
-            `> 职位：${body.position || '--'}`,
-            `> 电话：${body.phone || '--'}`,
-            `> 邮箱：${body.email || '--'}`,
-            `> 关注：${body.interest || '--'}`,
-            ``,
-            `**需求详情：**`,
-            `> ${body.message || '无'}`,
-            ``,
-            `提交时间：${time}`,
-        ].join('\n');
+        // template_card text_notice — 企业微信原生卡片，高级感拉满
+        const payload = {
+            msgtype: 'template_card',
+            template_card: {
+                card_type: 'text_notice',
+                source: {
+                    icon_url: 'https://wework.qpic.cn/wwpic/252813_jOfDHtcISzuodLa_1629280209/0',
+                    desc: '云科网数 · 官网咨询',
+                    desc_color: 2
+                },
+                main_title: {
+                    title: `${name} ｜ ${company}`,
+                    desc: time
+                },
+                emphasis_content: {
+                    title: body.interest || '未选择',
+                    desc: '关注方向'
+                },
+                quote_area: {
+                    type: 0,
+                    quote_text: body.message || '暂无具体需求描述'
+                },
+                horizontal_content_list: [
+                    { keyname: '职位', value: body.position || '--' },
+                    { keyname: '电话', value: phone },
+                    { keyname: '邮箱', value: body.email || '--' }
+                ],
+                jump_list: [
+                    { type: 1, title: '查看官网', url: 'https://www.yunkct.com' }
+                ],
+                card_action: {
+                    type: 1,
+                    url: 'https://www.yunkct.com'
+                }
+            }
+        };
 
         const r = await fetch(WX_WEBHOOK, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                msgtype: 'markdown',
-                markdown: { content: md }
-            })
+            body: JSON.stringify(payload)
         });
 
         const result = await r.json();
