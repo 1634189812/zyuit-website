@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>云科网数 — 专业音视频通信解决方案提供商</title>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #1a1a1a; font-size: 15px; line-height: 1.7; background: #fff;
+}
+
+/* ===== NAV ===== */
+.nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(255,255,255,.97); border-bottom: 1px solid #e5e5e5;
+}
+.nav-inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between; height: 56px;
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+.nav-logo img { height: 32px; }
+.nav-menu { display: flex; list-style: none; gap: 32px; }
+.nav-menu a { font-size: 13px; color: #555; text-decoration: none; letter-spacing: .3px; transition: color .2s; }
+.nav-menu a:hover { color: #0066cc; }
+
+/* ===== HERO ===== */
+.hero {
+    padding: 100px 24px 60px;
+    background: #fff; position: relative; overflow: hidden;
+}
+.hero::after {
+    content: ""; position: absolute; top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, #eef4ff 0%, transparent 70%);
+    border-radius: 50%;
+}
+.hero-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+.hero-eyebrow { font-size: 11px; color: #0066cc; letter-spacing: 2px; font-weight: 600; margin-bottom: 20px; }
+.hero h1 { font-size: 44px; font-weight: 700; color: #000; line-height: 1.2; max-width: 620px; letter-spacing: -.5px; margin-bottom: 20px; }
+.hero p { font-size: 16px; color: #555; max-width: 500px; margin-bottom: 32px; }
+.hero-ctrl { display: flex; gap: 16px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; padding: 12px 28px; text-decoration: none; letter-spacing: .2px; transition: all .2s; }
+.btn-fill { background: #0066cc; color: #fff; }
+.btn-fill:hover { background: #004e9e; }
+.btn-line { color: #333; border: 1px solid #ccc; }
+.btn-line:hover { border-color: #333; }
+
+/* ===== SECTION ===== */
+.sec { padding: 56px 24px; }
+.sec-gray { background: #f7f8fa; }
+.sec-inner { max-width: 1200px; margin: 0 auto; }
+.sec-head { margin-bottom: 36px; }
+.sec-head-center { text-align: center; }
+.sec-kicker { font-size: 11px; color: #0066cc; letter-spacing: 2px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; }
+.sec-head h2 { font-size: 30px; font-weight: 700; color: #000; letter-spacing: -.3px; margin-bottom: 12px; }
+.sec-head p { font-size: 15px; color: #777; max-width: 540px; }
+.sec-head-center p { margin: 0 auto; }
+
+/* ===== ABOUT ===== */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.about-img { background: #fff; border-radius: 8px; padding: 36px; display: flex; align-items: center; justify-content: center; min-height: 180px; }
+.about-img img { max-width: 100%; max-height: 140px; }
+.about-text h3 { font-size: 24px; font-weight: 700; color: #000; margin-bottom: 16px; }
+.about-text > p { font-size: 14px; color: #555; margin-bottom: 12px; line-height: 1.8; }
+.about-items { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+.ai { padding: 14px 0; border-top: 1px solid #eee; }
+.ai dt { font-size: 13px; font-weight: 600; color: #000; }
+.ai dd { font-size: 12px; color: #999; }
+
+/* ===== PRODUCTS (by brand) ===== */
+.brand-section { margin-bottom: 36px; }
+.brand-section:last-child { margin-bottom: 0; }
+.brand-hd { display: flex; align-items: baseline; gap: 16px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid #eee; }
+.brand-hd h3 { font-size: 20px; font-weight: 700; color: #000; }
+.brand-hd .en { font-size: 12px; color: #999; }
+.p-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.p-card {
+    background: #fff; border: 1px solid #e8e8e8; text-decoration: none; color: inherit;
+    display: block; transition: all .25s; overflow: hidden;
+}
+.p-card:hover { border-color: #0066cc; box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+.p-card:hover .p-name { color: #0066cc; }
+.p-img {
+    width: 100%; aspect-ratio: 4/3; background: #f7f8fa; display: flex;
+    align-items: center; justify-content: center; overflow: hidden;
+}
+.p-img img { width: 100%; height: 100%; object-fit: contain; padding: 12px; }
+.p-img-placeholder {
+    width: 100%; aspect-ratio: 4/3; background: #f0f4ff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; color: #c0d4f0;
+}
+.p-info { padding: 12px 14px; }
+.p-name { font-size: 14px; font-weight: 600; color: #000; margin-bottom: 3px; transition: color .2s; }
+.p-desc { font-size: 12px; color: #888; line-height: 1.4; }
+
+/* ===== CASES (Logo Wall) ===== */
+.case-wall { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.case-logo {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: #fff; border: 1px solid #e0e0e0; padding: 36px 24px;
+    text-decoration: none; color: inherit; transition: all .3s; min-height: 160px;
+    text-align: center; gap: 14px; border-radius: 8px; position: relative; overflow: hidden;
+}
+.case-logo::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: #0066cc; transform: scaleX(0); transition: transform .3s;
+}
+.case-logo:hover::before { transform: scaleX(1); }
+.case-logo:hover { border-color: #0066cc; box-shadow: 0 8px 28px rgba(0,102,204,.1); transform: translateY(-2px); }
+.case-logo img { max-width: 100%; max-height: 60px; object-fit: contain; }
+.case-logo .name { font-size: 15px; font-weight: 700; color: #111; letter-spacing: .5px; }
+.case-logo .sub { font-size: 12px; color: #999; font-weight: 400; letter-spacing: .3px; }
+@media (max-width: 960px) {
+    .case-wall { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+}
+@media (max-width: 600px) {
+    .case-wall { grid-template-columns: 1fr; gap: 14px; }
+}
+
+/* ===== CLIENTS ===== */
+.clients-bar {
+    display: flex; justify-content: center; align-items: center;
+}
+.clients-bar img {
+    width: 100%; max-width: 960px; height: auto;
+    display: block;
+}
+
+/* ===== ADVANTAGES ===== */
+.adv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.adv-cell {
+    background: #fff; border-radius: 8px; padding: 32px 28px 28px;
+    position: relative; overflow: hidden;
+    transition: all .3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06), 0 0 0 1px rgba(0,0,0,.04);
+}
+.adv-cell::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #0066cc, #4da6ff);
+    transition: height .3s;
+}
+.adv-cell:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,.12), 0 0 0 1px rgba(0,0,0,.06);
+}
+.adv-cell:hover::before { height: 5px; }
+.adv-num {
+    font-size: 40px; font-weight: 800; color: #0066cc;
+    line-height: 1; margin-bottom: 12px; letter-spacing: -1px;
+    opacity: .15;
+}
+.adv-cell h4 { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 8px; position: relative; z-index: 1; }
+.adv-cell p { font-size: 13px; color: #888; line-height: 1.7; position: relative; z-index: 1; }
+
+/* ===== CONTACT ===== */
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.contact-l h3 { font-size: 22px; font-weight: 700; color: #000; margin-bottom: 16px; }
+.contact-l > p { font-size: 14px; color: #777; margin-bottom: 28px; }
+.ci { display: flex; gap: 12px; margin-bottom: 16px; font-size: 14px; color: #555; }
+.ci strong { display: block; font-size: 11px; color: #aaa; font-weight: 500; margin-bottom: 2px; }
+.ci-qr { cursor: pointer; color: #0066cc; transition: color .2s; }
+.ci-qr:hover { color: #004499; text-decoration: underline; }
+
+/* ===== MODAL ===== */
+.modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,.6); align-items: center; justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.modal-box {
+    background: #fff; border-radius: 12px; padding: 36px 40px 28px;
+    text-align: center; max-width: 360px; width: 90%; position: relative;
+    box-shadow: 0 16px 48px rgba(0,0,0,.2);
+}
+.modal-box img { width: 240px; border-radius: 6px; }
+.modal-box .modal-title { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 4px; }
+.modal-box .modal-sub { font-size: 13px; color: #888; margin-bottom: 20px; }
+.modal-close {
+    position: absolute; top: 12px; right: 14px;
+    background: none; border: none; font-size: 22px; color: #999;
+    cursor: pointer; line-height: 1; transition: color .2s;
+}
+.modal-close:hover { color: #333; }
+.cf { display: flex; flex-direction: column; gap: 12px; }
+.cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.cf input, .cf textarea, .cf select {
+    width: 100%; padding: 12px 14px; border: 1px solid #ddd; font-size: 14px;
+    font-family: inherit; color: #333; transition: border-color .2s; background: #fff;
+}
+.cf select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+.cf input:focus, .cf textarea:focus, .cf select:focus { outline: none; border-color: #0066cc; }
+.cf button {
+    background: #0066cc; color: #fff; border: none; padding: 14px; font-size: 15px;
+    font-weight: 600; cursor: pointer; transition: background .2s;
+}
+.cf button:hover { background: #004e9e; }
+.cf button:disabled { background: #93c5fd; cursor: not-allowed; }
+.cf-msg { font-size: 13px; margin-top: 4px; min-height: 20px; }
+.cf-msg.ok { color: #16a34a; }
+.cf-msg.err { color: #dc2626; }
+
+/* ===== FOOTER ===== */
+.footer { padding: 36px 24px; background: #111; color: rgba(255,255,255,.4); font-size: 12px; }
+.footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; }
+
+@media (max-width: 960px) {
+    .nav-menu { display: none; }
+    .hero h1 { font-size: 28px; }
+    .g2 { grid-template-columns: 1fr; gap: 32px; }
+    .p-grid { grid-template-columns: repeat(2, 1fr); }
+    .case-grid { grid-template-columns: 1fr 1fr; }
+    .adv-grid { grid-template-columns: repeat(2, 1fr); }
+    .adv-cell { border-right: none; padding: 24px 20px; }
+    .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+}
+@media (max-width: 600px) {
+    .p-grid { grid-template-columns: 1fr 1fr; }
+    .case-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo"><img src="logo.png" alt="vinCo 云科网数"></a>
+        <ul class="nav-menu">
+            <li><a href="#about">关于我们</a></li>
+            <li><a href="#cases">典型案例</a></li>
+            <li><a href="#products">产品方案</a></li>
+            <li><a href="#contact">联系我们</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+    <div class="hero-inner">
+        <div class="hero-eyebrow">音视频通信解决方案提供商</div>
+        <h1>让每一次沟通<br>更高效、更可靠</h1>
+        <p>江苏云科网数通信技术有限公司，专注音视频会议、融合通信与协作办公。代理亿联、迅时、星纵、鼎信等一线品牌，为政企客户提供从方案设计到交付运维的全链路服务。</p>
+        <div class="hero-ctrl">
+            <a href="#contact" class="btn btn-fill">获取方案</a>
+            <a href="#products" class="btn btn-line">查看产品</a>
+        </div>
+    </div>
+</header>
+
+<!-- ABOUT -->
+<section class="sec" id="about">
+    <div class="sec-inner">
+        <div class="g2">
+            <div class="about-img">
+                <img src="logo.png" alt="vinCo 云科网数">
+            </div>
+            <div class="about-text">
+                <div class="sec-kicker">About Us</div>
+                <h3>江苏云科网数通信技术有限公司</h3>
+                <p>专注于音视频会议、融合通信与协作办公的高新技术服务商。作为亿联、迅时、星纵、鼎信核心代理商，提供从需求调研、方案设计、设备选型，到安装部署、培训交付、售后运维的全链路一站式服务。</p>
+                <p>已累计服务超过500家企事业单位，覆盖央国企、公安系统、半导体、金融等多个行业领域。</p>
+                <dl class="about-items">
+                    <div class="ai"><dt>一线品牌代理</dt><dd>亿联 · 迅时 · 星纵 · 鼎信</dd></div>
+                    <div class="ai"><dt>全链路服务</dt><dd>咨询 · 选型 · 部署 · 运维</dd></div>
+                    <div class="ai"><dt>政企级交付</dt><dd>央国企 · 公安 · 半导体</dd></div>
+                    <div class="ai"><dt>7×24 响应</dt><dd>全国服务网络覆盖</dd></div>
+                </dl>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CASES -->
+<section class="sec sec-gray" id="cases">
+    <div class="sec-inner">
+        <div class="sec-head sec-head-center">
+            <div class="sec-kicker">Success Stories</div>
+            <h2>典型案例</h2>
+            <p>覆盖半导体、服装、金融等行业的标杆客户</p>
+        </div>
+        <div class="case-wall">
+            <a href="case-jcet.html" class="case-logo">
+                <img src="images/case-logo-jcet.png" alt="长电科技" onerror="this.style.display='none'">
+                <div class="name">长电科技</div><div class="sub">JCET | 全球封测龙头</div>
+            </a>
+            <a href="case-bosideng.html" class="case-logo">
+                <img src="images/case-logo-bosideng.png" alt="波司登" onerror="this.style.display='none'">
+                <div class="name">波司登</div><div class="sub">BOSIDENG</div>
+            </a>
+            <a href="case-mflex.html" class="case-logo">
+                <img src="images/case-logo-mflex.png" alt="MFLEX" onerror="this.style.display='none'">
+                <div class="name">MFLEX</div><div class="sub">柔性电路 | 全球前三</div>
+            </a>
+            <a href="case-ksrcb.html" class="case-logo">
+                <img src="images/case-logo-ksrcb.png" alt="昆山农商银行" onerror="this.style.display='none'">
+                <div class="name">昆山农商银行</div><div class="sub">KRCB | 信创升级</div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- PRODUCTS: Yealink -->
+<section class="sec sec-gray" id="products">
+    <div class="sec-inner">
+        <div class="sec-head sec-head-center">
+            <div class="sec-kicker">Products</div>
+            <h2>产品方案</h2>
+            <p>覆盖视频会议、语音通信、协作办公全场景</p>
+        </div>
+
+        <!-- 亿联 Yealink -->
+        <div class="brand-section">
+            <div class="brand-hd">
+                <h3>Yealink 亿联</h3>
+                <span class="en">视频会议 · SIP话机 · 会议平板</span>
+            </div>
+            <div class="p-grid">
+                <a href="https://www.yealink.com.cn/product-detail/meetingboard" target="_blank" class="p-card">
+                    <div class="p-img"><img src="images/yealink-meetingboard.png" alt="MeetingBoard" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">MeetingBoard 会议平板</div><div class="p-desc">电子白板 · 视频会议 · 无线投屏一体</div></div>
+                </a>
+                <a href="https://www.yealink.com.cn/product-detail/video-conferencing-meetingeye500" target="_blank" class="p-card">
+                    <div class="p-img"><img src="images/yealink-meetingeye500.png" alt="MeetingEye 500" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">MeetingEye 500</div><div class="p-desc">中大型会议室分体式终端</div></div>
+                </a>
+                <a href="https://www.yealink.com.cn/product-detail/meeting-meetingbar-a40" target="_blank" class="p-card">
+                    <div class="p-img"><img src="images/yealink-a40.png" alt="A40" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">MeetingBar A40</div><div class="p-desc">中小型会议室一体机</div></div>
+                </a>
+                <a href="https://www.yealink.com.cn/product-detail/microsoft-teams-rooms-mvcs90" target="_blank" class="p-card">
+                    <div class="p-img"><img src="images/yealink-mvcs90.png" alt="MVC S90" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">MVC S90</div><div class="p-desc">超大型会议室 Teams 认证方案</div></div>
+                </a>
+                <a href="https://www.yealink.com.cn/product-detail/ip-phone-t58a" target="_blank" class="p-card">
+                    <div class="p-img"><img src="images/yealink-t58.png" alt="T58" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">T58 智能商务话机</div><div class="p-desc">高端智能 IP 话机</div></div>
+                </a>
+                <a href="https://www.yealink.com.cn/product-detail/ip-phone-t77u" target="_blank" class="p-card">
+                    <div class="p-img"><img src="images/yealink-t77u.png" alt="T77U" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">T77U 触屏话机</div><div class="p-desc">高管与专业人士专用</div></div>
+                </a>
+                <a href="https://www.yealink.com.cn/product-detail/ip-phone-t48u" target="_blank" class="p-card">
+                    <div class="p-img"><img src="images/yealink-t48u.png" alt="T48U" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">T48U 大屏触控话机</div><div class="p-desc">7 英寸彩屏 · 卓越音质</div></div>
+                </a>
+                <a href="https://www.yealink.com.cn/product-detail/accessories-cm50" target="_blank" class="p-card">
+                    <div class="p-img"><img src="images/yealink-cm50.jpg" alt="CM50" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">CM50 吸顶麦克风</div><div class="p-desc">360° 全向拾音 · 无感安装</div></div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 迅时 New Rock -->
+        <div class="brand-section">
+            <div class="brand-hd">
+                <h3>New Rock 迅时</h3>
+                <span class="en">IPPBX · 语音网关 · SBC</span>
+            </div>
+            <div class="p-grid">
+                <a href="https://www.newrocktech.com.cn/ProductCenter/info_itemid_4290.html" target="_blank" class="p-card">
+                    <div class="p-img"><img src="images/newrock-om20g.png" alt="OM 系列 IPPBX" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">OM 系列 IPPBX</div><div class="p-desc">企业融合通信核心，支持模拟/数字中继、IP 分机</div></div>
+                </a>
+                <a href="https://www.newrocktech.com.cn/ProductCenter/info_itemid_4385.html" target="_blank" class="p-card">
+                    <div class="p-img"><img src="images/newrock-mx8g.png" alt="语音网关系列" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">语音网关系列</div><div class="p-desc">模拟/数字/FXO 网关，灵活对接各类语音系统</div></div>
+                </a>
+                <a href="https://www.newrocktech.com.cn/ProductCenter/info_itemid_4474.html" target="_blank" class="p-card">
+                    <div class="p-img"><img src="images/newrock-sbc.png" alt="SBC 会话边界控制器" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">SBC 会话边界控制器</div><div class="p-desc">企业通信安全接入，支持 NAT 穿透与加密</div></div>
+                </a>
+                <a href="https://www.newrocktech.com.cn/ProductCenter/info_itemid_4483.html" target="_blank" class="p-card">
+                    <div class="p-img"><img src="images/newrock-nrp1610.png" alt="NRP1610G/P 高端智能话机" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">NRP1610G/P 智能话机</div><div class="p-desc">7寸触摸彩屏 · Android 系统 · 视频通话</div></div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 星纵 Yeastar -->
+        <div class="brand-section">
+            <div class="brand-hd">
+                <h3>Yeastar 星纵</h3>
+                <span class="en">IPPBX · 云通信 · 网关</span>
+            </div>
+            <div class="p-grid">
+                <a href="https://www.yeastar.cn/p-series-ippbx/" target="_blank" class="p-card">
+                    <div class="p-img"><img src="images/yeastar-p-ippbx.png" alt="P 系列 IPPBX" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">P 系列 IPPBX</div><div class="p-desc">企业级 IP 通信平台，支持云管理</div></div>
+                </a>
+                <a href="https://www.yeastar.cn/voip-gateways/" target="_blank" class="p-card">
+                    <div class="p-img"><img src="images/yeastar-gateway.webp" alt="企业语音网关" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">企业语音网关</div><div class="p-desc">FXS/FXO/E1/T1 全系列，灵活扩展</div></div>
+                </a>
+                <a href="https://www.yeastar.cn/yeastar-p-call-center/" target="_blank" class="p-card">
+                    <div class="p-img"><img src="images/yeastar-callcenter.png" alt="呼叫中心" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">呼叫中心</div><div class="p-desc">全渠道接入 · 智能路由 · 实时监控</div></div>
+                </a>
+                <a href="https://www.yeastar.cn/p-series-linkus-softphone-desktop" target="_blank" class="p-card">
+                    <div class="p-img"><img src="images/yeastar-linkus.webp" alt="Linkus 统一通信" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">Linkus 统一通信</div><div class="p-desc">软电话 · 视频通话 · 即时消息</div></div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 鼎信 Dinstar -->
+        <div class="brand-section">
+            <div class="brand-hd">
+                <h3>Dinstar 鼎信</h3>
+                <span class="en">语音网关 · IPPBX · SBC</span>
+            </div>
+            <div class="p-grid">
+                <div class="p-card" style="cursor:default;">
+                    <div class="p-img"><img src="images/dinstar-ag.png" alt="模拟网关 AG 系列" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">模拟网关 AG 系列</div><div class="p-desc">FXS/FXO 模拟网关，灵活对接传统设备</div></div>
+                </div>
+                <div class="p-card" style="cursor:default;">
+                    <div class="p-img"><img src="images/dinstar-mtg.png" alt="数字网关 DG/MTG 系列" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">数字网关 DG/MTG 系列</div><div class="p-desc">E1/T1/PRI 数字中继网关</div></div>
+                </div>
+                <div class="p-card" style="cursor:default;">
+                    <div class="p-img"><img src="images/dinstar-sbc.png" alt="SBC 会话边界控制器" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">SBC 会话边界控制器</div><div class="p-desc">VoIP 安全接入与互联互通</div></div>
+                </div>
+                <div class="p-card" style="cursor:default;">
+                    <div class="p-img"><img src="images/dinstar-uc200.png" alt="UC2000 IPPBX" loading="lazy"></div>
+                    <div class="p-info"><div class="p-name">UC2000 IPPBX</div><div class="p-desc">企业融合通信平台，支持网关管理</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CLIENTS -->
+<section class="sec sec-gray" id="clients">
+    <div class="sec-inner">
+        <div class="sec-head sec-head-center">
+            <div class="sec-kicker">Our Clients</div>
+            <h2>合作客户</h2>
+        </div>
+        <div class="clients-bar">
+            <img src="clients.png" alt="合作客户" loading="lazy">
+        </div>
+    </div>
+</section>
+
+<!-- ADVANTAGES -->
+<section class="sec sec-gray" id="advantages">
+    <div class="sec-inner">
+        <div class="sec-head sec-head-center">
+            <div class="sec-kicker">Why Choose Us</div>
+            <h2>服务优势</h2>
+        </div>
+        <div class="adv-grid">
+            <div class="adv-cell"><div class="adv-num">01</div><h4>多品牌方案选型</h4><p>客观推荐最优品牌组合，不做单一品牌绑定</p></div>
+            <div class="adv-cell"><div class="adv-num">02</div><h4>免费方案设计</h4><p>免费上门勘测、方案设计，报价透明</p></div>
+            <div class="adv-cell"><div class="adv-num">03</div><h4>安装一体化交付</h4><p>设备安装、线路部署、系统调试一站式完成</p></div>
+            <div class="adv-cell"><div class="adv-num">04</div><h4>多平台深度兼容</h4><p>Teams、Zoom、腾讯会议、钉钉全平台适配</p></div>
+            <div class="adv-cell"><div class="adv-num">05</div><h4>政企项目经验</h4><p>丰富的央国企、公安系统、大型制造企业交付经验</p></div>
+            <div class="adv-cell"><div class="adv-num">06</div><h4>本地化及时响应</h4><p>江苏省内 4 小时到场，全国远程支持</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section class="sec sec-gray" id="contact">
+    <div class="sec-inner">
+        <div class="contact-grid">
+            <div class="contact-l">
+                <h3>联系我们</h3>
+                <p>如需方案咨询或预约演示，请留下联系方式，我们将在 24 小时内与您联系。</p>
+                <div class="ci"><strong>总部地址</strong>江苏省</div>
+                <div class="ci"><strong>服务热线</strong>15366839578</div>
+                <div class="ci"><strong>联系人</strong>张文龙</div>
+                <div class="ci"><strong>商务邮箱</strong>wlzhang@zyuit.cn</div>
+                <div class="ci"><strong>企业微信</strong><span class="ci-qr" onclick="openQr()">@云科网数（点击扫码添加）</span></div>
+            </div>
+            <form class="cf" id="contactForm">
+                <div class="cf-row">
+                    <input type="text" name="name" placeholder="您的姓名 *" required>
+                    <input type="text" name="position" placeholder="职位 / 部门">
+                </div>
+                <div class="cf-row">
+                    <input type="text" name="company" placeholder="公司名称 *" required>
+                    <input type="tel" name="phone" placeholder="联系电话 *" required>
+                </div>
+                <input type="email" name="email" placeholder="电子邮箱">
+                <select name="interest">
+                    <option value="">关注方向（可选）</option>
+                    <option value="视频会议">视频会议</option>
+                    <option value="语音通信">语音通信 / IPPBX</option>
+                    <option value="会议室管理">会议室预约管理系统</option>
+                    <option value="其他">其他</option>
+                </select>
+                <textarea name="message" rows="3" placeholder="请描述您的需求：使用平台（Teams/Zoom/腾讯会议/钉钉等）、会议室数量及面积、新建大楼还是改造利旧、预算范围、时间要求等"></textarea>
+                <button type="submit" id="submitBtn">提交咨询</button>
+                <div class="cf-msg" id="cfMsg"></div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-inner">
+        <span>&copy; 2026 江苏云科网数通信技术有限公司</span>
+        <span>专注音视频 · 视频会议 · 融合通信</span>
+    </div>
+</footer>
+
+<!-- 企业微信二维码弹窗 -->
+<div class="modal-overlay" id="qrModal" onclick="closeQr(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeQr()">&times;</button>
+        <div class="modal-title">扫码添加企业微信</div>
+        <div class="modal-sub">江苏云科网数 · 张文龙</div>
+        <img src="images/wechat-qr.jpg" alt="企业微信二维码">
+    </div>
+</div>
+
+<script>
+/* ============================================
+   联系表单提交 — 企业微信机器人通知
+   通过 Cloudflare Workers 代理解决跨域问题
+   ============================================ */
+const WX_WORKERS = 'https://ykwsc-webhook.1634189812.workers.dev/?key=8d8dcf3c-8a04-4fc1-aede-d24f79f491fc';
+const WX_DIRECT  = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=8d8dcf3c-8a04-4fc1-aede-d24f79f491fc';
+
+// 构建企业微信 Markdown 消息体
+function buildWxBody(data) {
+    const time = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+    const md = `## 官网新咨询
+> 姓名：**${data.name}**
+> 职位：${data.position}
+> 公司：**${data.company}**
+> 电话：${data.phone}
+> 邮箱：${data.email}
+> 关注方向：${data.interest}
+> 需求：${data.message}
+> 时间：${time}`;
+    return JSON.stringify({ msgtype: 'markdown', markdown: { content: md } });
+}
+
+// 方案A：fetch到Workers代理（有VPN/加速器时最快）
+async function tryWorkers(body, timeoutMs) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+        const r = await fetch(WX_WORKERS, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: body,
+            signal: ctrl.signal
+        });
+        return r.ok;
+    } catch(e) {
+        return false;
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
+// 方案B：no-cors直连 + 超时保护（不读响应，但能确保消息送达）
+function tryNoCors(body, timeoutMs) {
+    return new Promise((resolve) => {
+        // 超时兜底：防止无VPN时TCP连接挂死
+        const timer = setTimeout(() => resolve(false), timeoutMs);
+        fetch(WX_WORKERS, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: body
+        }).then(() => {
+            clearTimeout(timer);
+            resolve(true);
+        }).catch(() => {
+            clearTimeout(timer);
+            resolve(false);
+        });
+    });
+}
+
+// 主提交函数：并发双通道 + 统一超时
+async function submitToWx(data) {
+    const body = buildWxBody(data);
+
+    // Workers(fetch, 12s) + Workers(no-cors, 10s) 并发，任一成功即可
+    const race = await Promise.race([
+        Promise.allSettled([tryWorkers(body, 12000), tryNoCors(body, 10000)]),
+        new Promise(r => setTimeout(() => r([{status:'rejected'}]), 13000)) // 总超时13s
+    ]);
+
+    return race.some(r => r.status === 'fulfilled' && r.value === true);
+}
+
+const form = document.getElementById('contactForm');
+const btn  = document.getElementById('submitBtn');
+const msg  = document.getElementById('cfMsg');
+
+form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const fd = new FormData(form);
+    const data = {
+        name:     fd.get('name'),
+        position: fd.get('position') || '未填写',
+        company:  fd.get('company'),
+        phone:    fd.get('phone'),
+        email:    fd.get('email') || '未填写',
+        interest: fd.get('interest') || '未填写',
+        message:  fd.get('message') || '无'
+    };
+    if (!data.name || !data.company || !data.phone) {
+        showMsg('请填写所有必填项（姓名、公司、电话）', 'err'); return;
+    }
+
+    btn.textContent = '提交中…';
+    btn.disabled = true;
+    msg.className = 'cf-msg';
+    msg.textContent = '正在提交，请稍候…';
+
+    const result = await submitToWx(data);
+
+    if (result) {
+        showMsg('提交成功！我们会尽快与您联系。', 'ok');
+        form.reset();
+    } else {
+        showMsg('提交失败，请直接拨打服务热线 15366839578 或扫码添加企业微信', 'err');
+    }
+
+    btn.textContent = '提交咨询';
+    btn.disabled = false;
+});
+
+function showMsg(text, type) {
+    msg.textContent = text;
+    msg.className = 'cf-msg ' + type;
+}
+
+function openQr() {
+    document.getElementById('qrModal').classList.add('show');
+}
+function closeQr(e) {
+    if (e && e.target !== document.getElementById('qrModal')) return;
+    document.getElementById('qrModal').classList.remove('show');
+}
+</script>
+
+</body>
+</html>

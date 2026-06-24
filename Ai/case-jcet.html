@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>长电汽车电子 — 云科网数典型案例</title>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { -webkit-font-smoothing: antialiased; }
+body { font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif; color: #1a1a1a; font-size: 15px; line-height: 1.8; background: #fff; }
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255,255,255,.97); border-bottom: 1px solid #e5e5e5; }
+.nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+.nav-logo img { height: 32px; }
+.back-link { font-size: 13px; color: #0066cc; text-decoration: none; }
+
+.case-hero {
+    background: linear-gradient(135deg, #0b1a2e 0%, #142c4a 50%, #0b1a2e 100%);
+    padding: 110px 24px 60px; color: #fff; text-align: center;
+}
+.case-hero-inner { max-width: 800px; margin: 0 auto; }
+.case-tag { display: inline-block; font-size: 11px; letter-spacing: 2px; padding: 4px 16px; border: 1px solid rgba(255,255,255,.25); border-radius: 20px; margin-bottom: 20px; color: rgba(255,255,255,.7); }
+.case-hero h1 { font-size: 32px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 12px; line-height: 1.4; }
+.case-hero .sub { font-size: 14px; color: rgba(255,255,255,.5); }
+
+.sec { padding: 48px 24px; }
+.sec-gray { background: #f8f9fb; }
+.sec-dark { background: #111; color: #fff; }
+.sec-dark h2 { color: #fff; border-left-color: #4d94ff; }
+.sec-dark p, .sec-dark li { color: rgba(255,255,255,.7); }
+.sec-dark h3 { color: #fff; }
+.sec-inner { max-width: 860px; margin: 0 auto; }
+.sec h2 { font-size: 22px; font-weight: 700; color: #000; margin-bottom: 20px; padding-left: 12px; border-left: 3px solid #0066cc; }
+.sec h3 { font-size: 16px; font-weight: 700; color: #222; margin: 24px 0 8px; }
+.sec h3:first-child { margin-top: 0; }
+.sec p { font-size: 14px; color: #555; margin-bottom: 10px; }
+.sec ul { list-style: none; padding: 0; margin-bottom: 12px; }
+.sec ul li { font-size: 14px; color: #555; padding: 5px 0 5px 18px; position: relative; }
+.sec ul li::before { content: ""; position: absolute; left: 0; top: 12px; width: 5px; height: 5px; background: #0066cc; border-radius: 50%; }
+
+.sol-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.sol-card {
+    background: #fff; border: 1px solid #e8e8e8; padding: 22px 20px;
+    display: flex; align-items: flex-start; gap: 14px;
+}
+.sol-num {
+    width: 30px; height: 30px; border-radius: 50%; background: #e8f0fe;
+    color: #0066cc; font-weight: 700; font-size: 13px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.sol-card h4 { font-size: 14px; font-weight: 600; color: #000; margin-bottom: 4px; }
+.sol-card p { font-size: 13px; color: #777; margin: 0; line-height: 1.6; }
+
+.equip-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
+.equip-table th, .equip-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; }
+.equip-table th { font-size: 11px; letter-spacing: .5px; color: #999; font-weight: 500; background: #f8f9fb; }
+.equip-table td { color: #555; }
+.equip-table .num { font-weight: 600; color: #0066cc; }
+.equip-table .row-cat td { font-weight: 600; color: #222; background: #f8f9fb; font-size: 12px; padding-top: 16px; }
+
+.room-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+.room-card {
+    background: #fff; border: 1px solid #e8e8e8; padding: 16px; text-align: center;
+}
+.room-card .r-num { font-size: 28px; font-weight: 700; color: #0066cc; line-height: 1; }
+.room-card .r-unit { font-size: 12px; color: #999; margin-bottom: 6px; }
+.room-card .r-name { font-size: 13px; font-weight: 600; color: #000; margin-bottom: 4px; }
+.room-card .r-desc { font-size: 12px; color: #888; line-height: 1.4; }
+
+.val-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.val-item {
+    background: #fff; border: 1px solid #e8e8e8; padding: 20px 16px; text-align: center;
+    transition: box-shadow .2s;
+}
+.val-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+.val-item strong { display: block; font-size: 13px; color: #000; margin-bottom: 4px; }
+.val-item small { font-size: 12px; color: #999; display: block; }
+
+.topo-section { text-align: center; padding: 12px 0; }
+.topo-section img { max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 2px 16px rgba(0,0,0,.06); }
+
+.quote { background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%); border-left: 4px solid #0066cc; padding: 28px 32px; margin-top: 28px; }
+.quote p { font-size: 14px; color: #333; font-style: italic; line-height: 1.8; }
+.quote .attrib { font-size: 12px; color: #999; margin-top: 10px; font-style: normal; }
+
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
+.kpi-item { text-align: center; padding: 20px 12px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); }
+.kpi-item .kpi-num { font-size: 32px; font-weight: 700; color: #4d94ff; line-height: 1.1; }
+.kpi-item .kpi-label { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 6px; }
+
+.footer { padding: 32px 24px; background: #111; color: rgba(255,255,255,.35); font-size: 12px; }
+.footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; }
+
+@media (max-width: 768px) { .sol-grid, .val-grid, .room-grid, .kpi-row { grid-template-columns: 1fr 1fr; } .case-hero h1 { font-size: 22px; } }
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner"><a href="index.html" class="nav-logo"><img src="logo.png" alt="vinCo 云科网数"></a><a href="index.html#cases" class="back-link">&larr; 返回典型案例</a></div></nav>
+
+<header class="case-hero">
+    <div class="case-hero-inner">
+        <div class="case-tag">半导体 · 智能制造</div>
+        <h1>45 间会议室 + 300 方语音并发<br>亿联全场景智慧办公落地临港新工厂</h1>
+        <p class="sub">客户：长电汽车电子（JCET 长电科技核心业务）&nbsp;|&nbsp; 品牌：Yealink 亿联</p>
+    </div>
+</header>
+
+<section class="sec">
+    <div class="sec-inner">
+        <h2>项目背景</h2>
+        <h3>关于长电汽车电子</h3>
+        <p>长电汽车电子是全球半导体封测龙头——长电科技（JCET）的核心业务板块，聚焦车规级芯片封装测试，覆盖功率模块、传感器等领域，技术领先且客户遍布全球，是汽车电子核心供应商。</p>
+        <p>随着业务高速发展，长电汽车电子在临港新建工厂及办公大楼，需要构建面向未来的智能化办公环境，以满足企业日常会议、商务交流及对外形象展示需求。</p>
+        <h3>面临挑战</h3>
+        <ul>
+            <li>办公大楼 <strong>45 间会议室</strong>需配置专业音视频设备，支持 Teams Rooms、腾讯会议等多平台</li>
+            <li>办公与工厂区域需部署 <strong>300 方并发语音系统</strong>，替代传统程控交换网络</li>
+            <li>会议室资源紧张，缺乏智能化预约与释放机制，无效预约和资源冲突频发</li>
+            <li>各区域音视频设备品牌多、种类杂，缺少统一运维管理工具，IT 团队压力大</li>
+        </ul>
+    </div>
+</section>
+
+<section class="sec sec-gray">
+    <div class="sec-inner">
+        <h2>解决方案</h2>
+
+        <h3>UME 语音平台 — 300 方并发 IP 语音系统</h3>
+        <p>改造集团传统程控语音网络，在总部、新大楼及新厂部署亿联 UME 语音平台，集企业级通讯录、语音软交换、录音服务、会议服务、节点管理、终端设备管理及安全管理于一体。搭配亿联话机终端、UME 软终端，实现超清、智能的语音通话体验。</p>
+        <ul>
+            <li>满足日常外线呼叫、内线免费互拨、工厂无线通话</li>
+            <li>一个号码在话机、手机、电脑等多设备间互通</li>
+            <li>多端联动互通，语音通话中可共享桌面</li>
+            <li>适配企业不同接入场景，满足不同工作属性岗位的沟通需求</li>
+        </ul>
+
+        <h3>全场景会议室 — 四类空间分级部署</h3>
+        <div class="room-grid">
+            <div class="room-card">
+                <div class="r-num">10</div>
+                <div class="r-unit">间</div>
+                <div class="r-name">小型会议室</div>
+                <div class="r-desc">&le;20m&sup2; | MeetingBar AX0 + WPP30<br>门牌 + 人在传感器</div>
+            </div>
+            <div class="room-card">
+                <div class="r-num">11</div>
+                <div class="r-unit">间</div>
+                <div class="r-name">中型会议室</div>
+                <div class="r-desc">&le;40m&sup2; | A40 / IWB75Pro + WPP30<br>门牌 + 人在传感器</div>
+            </div>
+            <div class="room-card">
+                <div class="r-num">3</div>
+                <div class="r-unit">间</div>
+                <div class="r-name">大型会议室</div>
+                <div class="r-desc">&le;100m&sup2; | MVC S90 + ProAV<br>天花阵列麦 + 吸顶扬声器</div>
+            </div>
+            <div class="room-card">
+                <div class="r-num">2</div>
+                <div class="r-unit">间</div>
+                <div class="r-name">培训室</div>
+                <div class="r-desc">&le;100m&sup2; | MVC S90 + ProAV<br>手持麦 + 无感扩声</div>
+            </div>
+        </div>
+
+        <h3>智能化管理 — 从预约到运维全流程打通</h3>
+        <div class="sol-grid">
+            <div class="sol-card">
+                <div class="sol-num">1</div>
+                <div>
+                    <h4>多渠道预约与 IOT 自动联动</h4>
+                    <p>支持 O365 / Outlook / Teams 多渠道预约，门牌实时显示。会议开始前自动联动灯光、窗帘、空调、投影仪，结束后人走自动释放</p>
+                </div>
+            </div>
+            <div class="sol-card">
+                <div class="sol-num">2</div>
+                <div>
+                    <h4>人在传感器智能释放</h4>
+                    <p>结合人体感应传感器，检测无人状态后自动释放会议室、关闭声光电设备，提升利用率并降低能耗</p>
+                </div>
+            </div>
+            <div class="sol-card">
+                <div class="sol-num">3</div>
+                <div>
+                    <h4>统一运维与数据分析</h4>
+                    <p>统一平台实时监控会议室使用率、设备状态、预约趋势，生成可视化报表。支持远程集中管理、智能诊断、批量配置升级与故障预警</p>
+                </div>
+            </div>
+            <div class="sol-card">
+                <div class="sol-num">4</div>
+                <div>
+                    <h4>吸顶式音视频体验</h4>
+                    <p>采用 CM50 吸顶麦克风，取消桌面话筒与线缆，桌面整洁无物。AI 摄像头自动追踪，原生 Teams 集成</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="sec sec-dark">
+    <div class="sec-inner">
+        <h2>项目数据</h2>
+        <div class="kpi-row">
+            <div class="kpi-item"><div class="kpi-num">45</div><div class="kpi-label">间会议室</div></div>
+            <div class="kpi-item"><div class="kpi-num">300</div><div class="kpi-label">方语音并发</div></div>
+            <div class="kpi-item"><div class="kpi-num">26</div><div class="kpi-label">间含门牌+传感器</div></div>
+            <div class="kpi-item"><div class="kpi-num">4</div><div class="kpi-label">类会议室分级方案</div></div>
+        </div>
+        <div class="val-grid" style="margin-top:28px;">
+            <div class="val-item" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);"><strong style="color:#fff;">多平台兼容</strong><small style="color:rgba(255,255,255,.5);">Teams Rooms / 腾讯会议 / BYOD</small></div>
+            <div class="val-item" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);"><strong style="color:#fff;">UME 语音平台</strong><small style="color:rgba(255,255,255,.5);">300 方并发 · 多端联动</small></div>
+            <div class="val-item" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);"><strong style="color:#fff;">智能运维</strong><small style="color:rgba(255,255,255,.5);">统一平台 · 远程管理 · 故障预警</small></div>
+            <div class="val-item" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);"><strong style="color:#fff;">IOT 联动</strong><small style="color:rgba(255,255,255,.5);">灯光 / 空调 / 窗帘 / 投影自动联控</small></div>
+            <div class="val-item" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);"><strong style="color:#fff;">吸顶式部署</strong><small style="color:rgba(255,255,255,.5);">CM50 天花麦 · 桌面无物</small></div>
+            <div class="val-item" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);"><strong style="color:#fff;">O365 日程同步</strong><small style="color:rgba(255,255,255,.5);">双向预约 · 自动释放</small></div>
+        </div>
+    </div>
+</section>
+
+<section class="sec">
+    <div class="sec-inner">
+        <h2>客户评价</h2>
+        <div class="quote">
+            <p>亿联一体化解决方案帮助长电汽车电子构建了一个面向未来的智能化办公环境。从 45 间会议室的专业音视频部署到 300 方语音并发系统，从 IoT 自动化联动到统一运维管理平台，全面提升了沟通效率与空间利用率。桌面上看不到麦克风和线缆，会议体验简洁专业，对外形象大幅提升。</p>
+            <p class="attrib">— 长电汽车电子</p>
+        </div>
+    </div>
+</section>
+
+<footer class="footer"><div class="footer-inner"><span>&copy; 2026 江苏云科网数通信技术有限公司</span><span><a href="index.html" style="color:rgba(255,255,255,.35);text-decoration:none;">返回首页</a></span></div></footer>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>昆山农商银行 — 云科网数典型案例</title>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { -webkit-font-smoothing: antialiased; }
+body { font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif; color: #1a1a1a; font-size: 15px; line-height: 1.8; background: #fff; }
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255,255,255,.97); border-bottom: 1px solid #e5e5e5; }
+.nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+.nav-logo img { height: 32px; }
+.back-link { font-size: 13px; color: #0066cc; text-decoration: none; }
+
+.case-hero {
+    background: linear-gradient(135deg, #0d1b2a 0%, #1b2838 50%, #0d1b2a 100%);
+    padding: 110px 24px 60px; color: #fff; text-align: center;
+}
+.case-hero-inner { max-width: 800px; margin: 0 auto; }
+.case-tag { display: inline-block; font-size: 11px; letter-spacing: 2px; padding: 4px 16px; border: 1px solid rgba(255,255,255,.25); border-radius: 20px; margin-bottom: 20px; color: rgba(255,255,255,.7); }
+.case-hero h1 { font-size: 32px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 12px; line-height: 1.4; }
+.case-hero .sub { font-size: 14px; color: rgba(255,255,255,.5); }
+
+.sec { padding: 48px 24px; }
+.sec-gray { background: #f8f9fb; }
+.sec-inner { max-width: 860px; margin: 0 auto; }
+.sec h2 { font-size: 22px; font-weight: 700; color: #000; margin-bottom: 20px; padding-left: 12px; border-left: 3px solid #0066cc; }
+.sec h3 { font-size: 16px; font-weight: 700; color: #222; margin: 24px 0 8px; }
+.sec p { font-size: 14px; color: #555; margin-bottom: 10px; }
+.sec ul { list-style: none; padding: 0; margin-bottom: 12px; }
+.sec ul li { font-size: 14px; color: #555; padding: 5px 0 5px 18px; position: relative; }
+.sec ul li::before { content: ""; position: absolute; left: 0; top: 12px; width: 5px; height: 5px; background: #0066cc; border-radius: 50%; }
+
+.sol-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 32px; }
+.sol-card {
+    background: #fff; border: 1px solid #e8e8e8; padding: 22px 20px;
+    display: flex; align-items: flex-start; gap: 14px;
+}
+.sol-num {
+    width: 30px; height: 30px; border-radius: 50%; background: #e8f0fe;
+    color: #0066cc; font-weight: 700; font-size: 13px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.sol-card h4 { font-size: 14px; font-weight: 600; color: #000; margin-bottom: 4px; }
+.sol-card p { font-size: 13px; color: #777; margin: 0; line-height: 1.6; }
+
+.val-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.val-item {
+    background: #fff; border: 1px solid #e8e8e8; padding: 20px 16px; text-align: center;
+    transition: box-shadow .2s;
+}
+.val-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+.val-item strong { display: block; font-size: 13px; color: #000; margin-bottom: 4px; }
+.val-item small { font-size: 12px; color: #999; display: block; }
+
+.topo-section { text-align: center; padding: 12px 0; }
+.topo-section img { max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 2px 16px rgba(0,0,0,.06); }
+
+.equip-table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
+.equip-table th, .equip-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; }
+.equip-table th { font-size: 11px; letter-spacing: .5px; color: #999; font-weight: 500; background: #f8f9fb; }
+.equip-table td { color: #555; }
+.equip-table .num { font-weight: 600; color: #0066cc; }
+
+.quote { background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%); border-left: 4px solid #0066cc; padding: 28px 32px; margin-top: 28px; }
+.quote p { font-size: 14px; color: #333; font-style: italic; line-height: 1.8; }
+.quote .attrib { font-size: 12px; color: #999; margin-top: 10px; font-style: normal; }
+
+.footer { padding: 32px 24px; background: #111; color: rgba(255,255,255,.35); font-size: 12px; }
+.footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; }
+
+@media (max-width: 768px) { .sol-grid, .val-grid { grid-template-columns: 1fr; } .case-hero h1 { font-size: 22px; } }
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner"><a href="index.html" class="nav-logo"><img src="logo.png" alt="vinCo 云科网数"></a><a href="index.html#cases" class="back-link">&larr; 返回典型案例</a></div></nav>
+
+<header class="case-hero">
+    <div class="case-hero-inner">
+        <div class="case-tag">金融 · 信创视频会议</div>
+        <h1>YMS 3100「3+N」高可用集群<br>覆盖总行 + 36 家支行全场景视频会议</h1>
+        <p class="sub">客户：昆山农商银行 &nbsp;|&nbsp; 品牌：Yealink 亿联</p>
+    </div>
+</header>
+
+<section class="sec">
+    <div class="sec-inner">
+        <h2>项目背景</h2>
+        <h3>关于昆山农商银行</h3>
+        <p>昆山农商银行是经中国银行业监督管理委员会批准成立的股份制商业银行。全行现有员工1500余人，下设1个总行营业部、30个本地网点、3个异地区支行以及37个分理处。随着业务加速发展，现有视频会议系统严重滞后，无法满足日益增长的远程沟通需求。</p>
+        <h3>面临挑战</h3>
+        <ul>
+            <li>老视频会议系统使用多年，画面模糊、卡顿、不稳定</li>
+            <li>无法兼容行内现有软件视频会议 APP</li>
+            <li>传统视频会议缺乏文件共享、互动批注等协作功能</li>
+            <li>现有设备品牌老旧，无法满足信创改造要求</li>
+            <li>需兼容现有 POLYCOM 会议终端及 MAXHUB 会议平板</li>
+        </ul>
+    </div>
+</section>
+
+<section class="sec sec-gray">
+    <div class="sec-inner">
+        <h2>解决方案</h2>
+        <h3>UC 服务器 —「3+N」高可用核心平台</h3>
+        <p>在昆山农商行花桥核心机房，集群部署亿联融合通信视频会议服务器 YMS 3100，服务端架构满足冗余性，符合信创要求。平台采用「3+N」高可用部署方式：</p>
+        <ul>
+            <li><strong>3 台 YMS 3500 服务器</strong>作为核心节点，互为备份，单台宕机不影响视频系统使用</li>
+            <li>平台支持通过横向扩展提升性能和容量</li>
+            <li>亿联融合通信视频会议平台整体提供：平台备份、会管会控、软硬件注册、企业地址簿、设备管理、视频会议、互动协作等应用功能</li>
+        </ul>
+        <p>平台兼容性方面：能够兼容 POLYCOM 会议终端及 MAXHUB 会议平板，实现 Cisco 设备主辅流音视频接入转发。后期扩展支持移动端视频会议接入。</p>
+
+        <h3>终端部署 — 从总行到 36 家支行全覆盖</h3>
+
+        <div class="sol-grid">
+            <div class="sol-card">
+                <div class="sol-num">1</div>
+                <div>
+                    <h4>会议平板 — MeetingBoard 系列</h4>
+                    <p>本地 26 家支行及异地 10 家支行配置一体式视频会议平板：MeetingBoard 65Pro 29台、75Pro 5台、86Pro 2台，覆盖日常会议与培训场景</p>
+                </div>
+            </div>
+            <div class="sol-card">
+                <div class="sol-num">2</div>
+                <div>
+                    <h4>分体式终端 — MeetingEye 500 Pro</h4>
+                    <p>总行 4 个会议室 + 花桥 1 个会议室各部署 1 套，兼容现有 LED 大屏及调音台设备。总行 2 个会议室可兼容现有 POLYCOM 终端主辅流音视频接入</p>
+                </div>
+            </div>
+            <div class="sol-card">
+                <div class="sol-num">3</div>
+                <div>
+                    <h4>一体机 — MeetingBar A40</h4>
+                    <p>青阳路大楼普惠事业部配置 1 套，利旧现有 MAXHUB 商显显示功能，提供一体式音视频会议体验</p>
+                </div>
+            </div>
+            <div class="sol-card">
+                <div class="sol-num">4</div>
+                <div>
+                    <h4>全终端融合入会</h4>
+                    <p>亿联终端可加入会议、发起即时会议或通过日程信息一键入会，实现会议室终端、桌面话机、移动端无缝协作</p>
+                </div>
+            </div>
+        </div>
+
+        <table class="equip-table">
+            <thead><tr><th>设备型号</th><th>类别</th><th>数量</th><th>部署位置</th></tr></thead>
+            <tbody>
+                <tr><td>YMS 3500</td><td>融合通信服务器</td><td class="num">3</td><td>花桥核心机房</td></tr>
+                <tr><td>MeetingBoard 65Pro</td><td>智能会议平板 65寸</td><td class="num">29</td><td>本地 + 异地支行</td></tr>
+                <tr><td>MeetingBoard 75Pro</td><td>智能会议平板 75寸</td><td class="num">5</td><td>本地 + 异地支行</td></tr>
+                <tr><td>MeetingBoard 86Pro</td><td>智能会议平板 86寸</td><td class="num">2</td><td>本地 + 异地支行</td></tr>
+                <tr><td>MeetingEye 500 Pro</td><td>分体式视频会议终端</td><td class="num">5</td><td>总行 4 + 花桥 1 会议室</td></tr>
+                <tr><td>MeetingBar A40</td><td>一体式视频会议终端</td><td class="num">1</td><td>青阳路大楼普惠事业部</td></tr>
+            </tbody>
+        </table>
+
+        <div class="topo-section" style="margin-top:32px;">
+            <h3 style="text-align:left;">系统拓扑</h3>
+            <img src="case-ksrcb-topo.png" alt="昆山农商银行视频会议拓扑图">
+        </div>
+
+        <div class="val-grid" style="margin-top:28px;">
+            <div class="val-item"><strong>信创合规</strong><small>满足金融信创改造要求</small></div>
+            <div class="val-item"><strong>「3+N」高可用</strong><small>3 台 YMS 3500 互为备份</small></div>
+            <div class="val-item"><strong>利旧兼容</strong><small>兼容 POLYCOM / Cisco / MAXHUB</small></div>
+            <div class="val-item"><strong>36 家支行覆盖</strong><small>总行 + 本地 + 异地全覆盖</small></div>
+            <div class="val-item"><strong>全场景协作</strong><small>从报告厅到小型洽谈室</small></div>
+            <div class="val-item"><strong>移动端扩展</strong><small>支持后期移动端接入</small></div>
+        </div>
+    </div>
+</section>
+
+<section class="sec">
+    <div class="sec-inner">
+        <h2>客户评价</h2>
+        <div class="quote">
+            <p>昆山农商银行对本次信创视频会议系统升级给予了高度认可。亿联的解决方案不仅实现了从总部到网点、从会议室到报告厅的全场景覆盖，还通过了信创认证，满足了国产化要求。系统画面清晰流畅，操作便捷，解决了原有系统的不稳定和高维护成本的问题。</p>
+            <p class="attrib">— 昆山农商银行</p>
+        </div>
+    </div>
+</section>
+
+<footer class="footer"><div class="footer-inner"><span>&copy; 2026 江苏云科网数通信技术有限公司</span><span><a href="index.html" style="color:rgba(255,255,255,.35);text-decoration:none;">返回首页</a></span></div></footer>
+</body>
+</html>

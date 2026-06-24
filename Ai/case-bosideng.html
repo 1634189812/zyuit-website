@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>波司登 — 云科网数典型案例</title>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #1a1a1a; font-size: 15px; line-height: 1.8; background: #fff;
+}
+.nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(255,255,255,.97); border-bottom: 1px solid #e5e5e5;
+}
+.nav-inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between; height: 56px;
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+.nav-logo img { height: 32px; }
+.back-link { font-size: 13px; color: #0066cc; text-decoration: none; }
+
+.case-hero {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 110px 24px 56px; color: #fff; text-align: center;
+}
+.case-hero-inner { max-width: 800px; margin: 0 auto; }
+.case-tag {
+    display: inline-block; font-size: 11px; letter-spacing: 2px; padding: 4px 16px;
+    border: 1px solid rgba(255,255,255,.3); border-radius: 20px; margin-bottom: 20px;
+}
+.case-hero h1 { font-size: 36px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 16px; }
+.case-hero .sub { font-size: 15px; color: rgba(255,255,255,.6); }
+
+.sec { padding: 48px 24px; }
+.sec-gray { background: #f7f8fa; }
+.sec-inner { max-width: 900px; margin: 0 auto; }
+.sec h2 { font-size: 24px; font-weight: 700; color: #000; margin-bottom: 24px; padding-left: 12px; border-left: 3px solid #0066cc; }
+.sec h3 { font-size: 17px; font-weight: 700; color: #333; margin-bottom: 12px; margin-top: 28px; }
+.sec h3:first-child { margin-top: 0; }
+.sec p { font-size: 14px; color: #555; margin-bottom: 12px; }
+.sec ul { list-style: none; padding: 0; margin-bottom: 16px; }
+.sec ul li {
+    font-size: 14px; color: #555; padding: 6px 0 6px 20px; position: relative;
+}
+.sec ul li::before {
+    content: ""; position: absolute; left: 0; top: 14px;
+    width: 6px; height: 6px; background: #0066cc; border-radius: 50%;
+}
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.sol-card {
+    background: #fff; border: 1px solid #eee; padding: 24px;
+    display: flex; align-items: flex-start; gap: 16px;
+}
+.sol-num {
+    width: 32px; height: 32px; border-radius: 50%; background: #e8f0fe;
+    color: #0066cc; font-weight: 700; font-size: 14px; display: flex;
+    align-items: center; justify-content: center; flex-shrink: 0;
+}
+.sol-card h4 { font-size: 14px; font-weight: 600; color: #000; margin-bottom: 4px; }
+.sol-card p { font-size: 13px; color: #888; margin: 0; }
+.topo-box { margin: 32px 0; border: 1px solid #eee; padding: 24px; background: #fff; }
+.topo-box img { width: 100%; display: block; }
+.topo-box .caption { font-size: 12px; color: #999; margin-top: 12px; text-align: center; }
+.val-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.val-item {
+    background: #fff; border: 1px solid #eee; padding: 24px 20px;
+}
+.val-item strong { display: block; font-size: 13px; color: #000; margin-bottom: 6px; font-weight: 600; }
+.val-item p { font-size: 12px; color: #888; margin: 0; }
+.quote {
+    background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
+    border-left: 4px solid #0066cc; padding: 32px; margin-top: 32px;
+}
+.quote p { font-size: 14px; color: #333; font-style: italic; line-height: 1.8; }
+.quote .attrib { font-size: 12px; color: #999; margin-top: 12px; font-style: normal; }
+.footer { padding: 36px 24px; background: #111; color: rgba(255,255,255,.4); font-size: 12px; }
+.footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; }
+
+@media (max-width: 768px) {
+    .g2, .val-grid { grid-template-columns: 1fr; }
+    .case-hero h1 { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner"><a href="index.html" class="nav-logo"><img src="logo.png" alt="vinCo 云科网数"></a><a href="index.html#cases" class="back-link">&larr; 返回典型案例</a></div></nav>
+
+<header class="case-hero">
+    <div class="case-hero-inner">
+        <div class="case-tag">制造业 · 全场景视频会议</div>
+        <h1>YMS 3100 单中心-分支再生架构<br>覆盖全国26个销售分公司</h1>
+        <p class="sub">客户：波司登国际控股有限公司 &nbsp;|&nbsp; 品牌：亿联 Yealink</p>
+    </div>
+</header>
+
+<section class="sec">
+    <div class="sec-inner">
+        <h2>项目背景</h2>
+        <h3>关于波司登</h3>
+        <p>波司登国际控股有限公司是中国领先的羽绒服品牌，拥有26个销售分公司，员工超8万人，办公地点分布全国各地，总部位于江苏常熟。</p>
+        <h3>面临挑战</h3>
+        <ul>
+            <li>总部（集团+产品中心）双中心之间链路不稳定，视频会议体验受影响</li>
+            <li>出局线路单一，仅依赖电信E1，外呼可靠性不足</li>
+            <li>缺乏远程办公接入手段，全国销售分公司难以统一接入总部会议系统</li>
+            <li>终端设备类型多、数量大，缺乏统一管控和自动化运维能力</li>
+        </ul>
+    </div>
+</section>
+
+<section class="sec sec-gray">
+    <div class="sec-inner">
+        <h2>解决方案</h2>
+        <div class="g2" style="margin-bottom:16px;">
+            <div class="sol-card">
+                <div class="sol-num">1</div>
+                <div><h4>总部核心：YMS 3100 双机热备</h4><p>在总部机房部署亿联YMS 3100通信中枢，双机热备架构，承载全国视频会议与语音交换，单台故障自动切换</p></div>
+            </div>
+            <div class="sol-card">
+                <div class="sol-num">2</div>
+                <div><h4>边缘防护：SBC安全边界</h4><p>部署SBC会话边界控制器，实现NAT穿透与攻击防护，保障总部平台安全对外开放服务</p></div>
+            </div>
+            <div class="sol-card">
+                <div class="sol-num">3</div>
+                <div><h4>云端分支再生：阿里云节点</h4><p>在阿里云部署分支再生节点，各销售分公司通过SD-WAN/VPN接入，就近获取会议服务，降低延迟</p></div>
+            </div>
+            <div class="sol-card">
+                <div class="sol-num">4</div>
+                <div><h4>双路由出局：电信E1 + 阿里云Trunk</h4><p>企业电信E1提供本地固话出局，阿里云SIP Trunk提供互联网备路，双重保障外呼不中断</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="sec">
+    <div class="sec-inner">
+        <h2>系统拓扑</h2>
+        <div class="topo-box">
+            <img src="case-bosideng-topo.png" alt="波司登YMS 3100单中心-分支再生系统拓扑图">
+            <p class="caption">波司登 YMS 3100 单中心-分支再生-互联网全容灾系统拓扑架构</p>
+        </div>
+    </div>
+</section>
+
+<section class="sec sec-gray">
+    <div class="sec-inner">
+        <h2>全终端兼容</h2>
+        <p>方案从总部沟通室到个人桌面、再到移动办公终端实现无缝覆盖：</p>
+        <div class="val-grid">
+            <div class="val-item"><strong>UME PC/手机软端</strong><p>桌面端与移动端全覆盖，随时随地接入</p></div>
+            <div class="val-item"><strong>T58W 视频话机</strong><p>7寸触摸彩屏，高清音视频一体化</p></div>
+            <div class="val-item"><strong>MeetingEye 会议室终端</strong><p>分体式设计，适配各类会议室空间</p></div>
+            <div class="val-item"><strong>T31G/VP59 桌面话机</strong><p>覆盖办公桌面语音通信需求</p></div>
+            <div class="val-item"><strong>门店 IP 话机</strong><p>远程部署，总部统一配置管理</p></div>
+            <div class="val-item"><strong>移动端随时入会</strong><p>外勤人员通过UME手机端一键入会</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="sec">
+    <div class="sec-inner">
+        <h2>客户收益</h2>
+        <div class="val-grid">
+            <div class="val-item"><strong>全国26个分公司统一接入</strong><p>通过阿里云再生节点，各分公司就近获取会议服务</p></div>
+            <div class="val-item"><strong>本地+云端双容灾保障</strong><p>本地双机热备+云端再生节点，双重保障不中断</p></div>
+            <div class="val-item"><strong>全终端无缝兼容</strong><p>从会议室到桌面再到移动端，体验一致</p></div>
+            <div class="val-item"><strong>运维效率大幅提升</strong><p>统一管控平台，终端自动部署与策略批量下发</p></div>
+            <div class="val-item"><strong>视频会议体验改善</strong><p>就近接入降低延迟，视频流畅度显著提升</p></div>
+            <div class="val-item"><strong>满足信创合规要求</strong><p>亿联全系列支持国产化适配与信创标准</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="sec sec-gray">
+    <div class="sec-inner">
+        <h2>客户评价</h2>
+        <div class="quote">
+            <p>波司登对亿联YMS 3100视频会议方案给予高度评价。方案通过本地双机热备+阿里云再生节点的混合云架构，实现了全场景无缝迁移，全国26个销售分公司均可稳定接入总部视频会议系统。电信E1与阿里云SIP Trunk双路由出局设计，有效提升了外呼可靠性。整体方案在降本增效的同时兼顾了安全合规要求，充分满足了大型服装企业对高效协同、安全可靠通信的全面需求。</p>
+            <p class="attrib">— 波司登国际控股有限公司</p>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <span>&copy; 2026 江苏云科网数通信技术有限公司</span>
+        <span><a href="index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">返回首页</a></span>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>维信电子（MFLEX） — 云科网数典型案例</title>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #1a1a1a; font-size: 15px; line-height: 1.8; background: #fff;
+}
+.nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(255,255,255,.97); border-bottom: 1px solid #e5e5e5;
+}
+.nav-inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between; height: 56px;
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+.nav-logo img { height: 32px; }
+.back-link { font-size: 13px; color: #0066cc; text-decoration: none; }
+
+.case-hero {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 110px 24px 56px; color: #fff; text-align: center;
+}
+.case-hero-inner { max-width: 800px; margin: 0 auto; }
+.case-tag {
+    display: inline-block; font-size: 11px; letter-spacing: 2px; padding: 4px 16px;
+    border: 1px solid rgba(255,255,255,.3); border-radius: 20px; margin-bottom: 20px;
+}
+.case-hero h1 { font-size: 36px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 16px; }
+.case-hero .sub { font-size: 15px; color: rgba(255,255,255,.6); }
+
+.sec { padding: 48px 24px; }
+.sec-gray { background: #f7f8fa; }
+.sec-inner { max-width: 900px; margin: 0 auto; }
+.sec h2 { font-size: 24px; font-weight: 700; color: #000; margin-bottom: 24px; padding-left: 12px; border-left: 3px solid #0066cc; }
+.sec h3 { font-size: 17px; font-weight: 700; color: #333; margin-bottom: 12px; margin-top: 28px; }
+.sec h3:first-child { margin-top: 0; }
+.sec p { font-size: 14px; color: #555; margin-bottom: 12px; }
+.sec ul { list-style: none; padding: 0; margin-bottom: 16px; }
+.sec ul li {
+    font-size: 14px; color: #555; padding: 6px 0 6px 20px; position: relative;
+}
+.sec ul li::before {
+    content: ""; position: absolute; left: 0; top: 14px;
+    width: 6px; height: 6px; background: #0066cc; border-radius: 50%;
+}
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.sol-card {
+    background: #fff; border: 1px solid #eee; padding: 24px;
+    display: flex; align-items: flex-start; gap: 16px;
+}
+.sol-num {
+    width: 32px; height: 32px; border-radius: 50%; background: #e8f0fe;
+    color: #0066cc; font-weight: 700; font-size: 14px; display: flex;
+    align-items: center; justify-content: center; flex-shrink: 0;
+}
+.sol-card h4 { font-size: 14px; font-weight: 600; color: #000; margin-bottom: 4px; }
+.sol-card p { font-size: 13px; color: #888; margin: 0; }
+.topo-box { margin: 32px 0; border: 1px solid #eee; padding: 24px; background: #fff; }
+.topo-box img { width: 100%; display: block; }
+.topo-box .caption { font-size: 12px; color: #999; margin-top: 12px; text-align: center; }
+.val-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.val-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.val-item {
+    background: #fff; border: 1px solid #eee; padding: 24px 20px;
+}
+.val-item strong { display: block; font-size: 13px; color: #000; margin-bottom: 6px; font-weight: 600; }
+.val-item p { font-size: 12px; color: #888; margin: 0; }
+.quote {
+    background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
+    border-left: 4px solid #0066cc; padding: 32px; margin-top: 32px;
+}
+.quote p { font-size: 14px; color: #333; font-style: italic; line-height: 1.8; }
+.quote .attrib { font-size: 12px; color: #999; margin-top: 12px; font-style: normal; }
+.footer { padding: 36px 24px; background: #111; color: rgba(255,255,255,.4); font-size: 12px; }
+.footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; }
+
+@media (max-width: 768px) {
+    .g2, .val-grid { grid-template-columns: 1fr; }
+    .case-hero h1 { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner"><a href="index.html" class="nav-logo"><img src="logo.png" alt="vinCo 云科网数"></a><a href="index.html#cases" class="back-link">&larr; 返回典型案例</a></div></nav>
+
+<header class="case-hero">
+    <div class="case-hero-inner">
+        <div class="case-tag">制造业 · 跨区域统一通信</div>
+        <h1>UC双中心架构<br>打通苏州-盐城-新加坡三地语音网络</h1>
+        <p class="sub">客户：维信电子（MFLEX）&nbsp;|&nbsp; 品牌：亿联 Yealink</p>
+    </div>
+</header>
+
+<section class="sec">
+    <div class="sec-inner">
+        <h2>项目背景</h2>
+        <h3>关于维信电子</h3>
+        <p>维信电子（MFLEX）是全球柔性线路板（FPC）领域前三的龙头企业，国内领先的高精度互联解决方案提供商。公司生产基地分布于苏州、盐城及新加坡，日常跨区域通信协作需求密集。</p>
+        <h3>面临挑战</h3>
+        <ul>
+            <li>苏州总部、盐城工厂、新加坡工厂语音系统各自独立，跨区域互联互通困难</li>
+            <li>现有语音外线资源分散，缺乏统一的路由调度能力</li>
+            <li>员工异地办公、移动办公场景下难以接入企业语音网络</li>
+            <li>硬件话机与软终端缺乏统一管理平台，运维成本居高不下</li>
+        </ul>
+    </div>
+</section>
+
+<section class="sec sec-gray">
+    <div class="sec-inner">
+        <h2>解决方案</h2>
+        <div class="g2" style="margin-bottom:16px;">
+            <div class="sol-card">
+                <div class="sol-num">1</div>
+                <div><h4>双中心高可用部署</h4><p>机房内部署两套亿联UC音视频服务器，红庄与郭巷形成3+0双活架构，业务负载均衡、故障自动切换</p></div>
+            </div>
+            <div class="sol-card">
+                <div class="sol-num">2</div>
+                <div><h4>运营商外线接入</h4><p>部署两台YMG200语音网关，分别对接红庄、郭巷两路运营商E1线路，智能路由冗余出局</p></div>
+            </div>
+            <div class="sol-card">
+                <div class="sol-num">3</div>
+                <div><h4>异地工厂互联</h4><p>通过SIP Trunk对接盐城工厂佳米语音交换机与新加坡工厂思科PBX，实现三地短号互拨</p></div>
+            </div>
+            <div class="sol-card">
+                <div class="sol-num">4</div>
+                <div><h4>终端统一管理</h4><p>通过亿联DMP平台统一纳管T46U/T31G/VP59硬件话机及UME软终端，批量策略下发、自动配置升级</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="sec">
+    <div class="sec-inner">
+        <h2>系统拓扑</h2>
+        <div class="topo-box">
+            <img src="case-mflex-topo.png" alt="维信电子UC双中心系统拓扑图">
+            <p class="caption">维信电子 UC 3+0 双中心系统拓扑架构</p>
+        </div>
+    </div>
+</section>
+
+<section class="sec sec-gray">
+    <div class="sec-inner">
+        <h2>客户收益</h2>
+        <div class="val-grid">
+            <div class="val-item"><strong>三地短号免费互拨</strong><p>苏州、盐城、新加坡号码互通，内部通话零成本</p></div>
+            <div class="val-item"><strong>双中心故障自动切换</strong><p>红庄与郭巷3+0双活架构，单点故障不影响业务</p></div>
+            <div class="val-item"><strong>远程办公无缝接入</strong><p>DMZ边缘节点+UME软端，内外网通信一体化</p></div>
+            <div class="val-item"><strong>终端统一管理运维</strong><p>DMP平台自动配置升级，批量策略下发</p></div>
+            <div class="val-item"><strong>通信成本降低约40%</strong><p>跨区域短号互拨取代长途通话，节省开支</p></div>
+            <div class="val-item"><strong>新站点快速开通</strong><p>终端即插即用，开通周期从天级缩短至小时级</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="sec">
+    <div class="sec-inner">
+        <h2>客户评价</h2>
+        <div class="quote">
+            <p>维信电子对亿联UC统一通信方案给予了高度评价。方案通过双中心3+0架构保障了语音系统的高可用性，SIP Trunk成功打通苏州、盐城、新加坡三地语音网络，实现了内部短号免费互拨。YMG200双网关冗余设计配合DMP统一管理平台，兼顾了通信可靠性与运维便捷性，整体方案充分满足了跨国制造企业对通信系统的严苛要求。</p>
+            <p class="attrib">— 维信电子（MFLEX）</p>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <span>&copy; 2026 江苏云科网数通信技术有限公司</span>
+        <span><a href="index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">返回首页</a></span>
+    </div>
+</footer>
+
+</body>
+</html>
