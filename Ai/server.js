@@ -50,34 +50,14 @@ app.post('/api/contact', async (req, res) => {
         const name = body.name || '未填';
         const company = body.company || '未填';
         const phone = body.phone || '--';
-        const interest = body.interest || '未选择';
-        const position = body.position || '--';
-        const email = body.email || '--';
-        const message = body.message || '无';
 
-        // Generate lead ID & persist
-        const leadId = 'L' + Date.now().toString(36).toUpperCase();
-        leads[leadId] = { id: leadId, name, company, phone, time, status: '待处理' };
-        saveLeads();
-
-        // markdown_v2 — 表格排版，干净专业
+        // markdown_v2 — 紧凑纯文字，无跳转按钮
         const md = [
-            `# 官网新咨询`,
+            `**${name}** · ${company} · ${phone}`,
             ``,
-            `| 字段 | 详情 |`,
-            `| :--- | :--- |`,
-            `| 客户 | **${name}** |`,
-            `| 公司 | **${company}** |`,
-            `| 职位 | ${position} |`,
-            `| 电话 | ${phone} |`,
-            `| 邮箱 | ${email} |`,
-            `| 关注方向 | ${interest} |`,
+            `职位：${body.position || '--'}｜邮箱：${body.email || '--'}｜关注：${body.interest || '未选择'}`,
             ``,
-            `### 需求描述`,
-            `> ${message}`,
-            ``,
-            `---`,
-            `[✅ 标记已联系](http://146.56.231.87/api/lead/contacted?id=${leadId})　[🎯 标记已完成](http://146.56.231.87/api/lead/done?id=${leadId})`,
+            `> ${body.message || '无'}`,
             ``,
             `提交时间：${time}`,
         ].join('\n');
