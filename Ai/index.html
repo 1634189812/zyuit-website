@@ -53,6 +53,15 @@ body {
 .nav-menu { display: flex; list-style: none; gap: 32px; }
 .nav-menu a { font-size: 13px; color: #555; text-decoration: none; letter-spacing: .3px; transition: color .2s; }
 .nav-menu a:hover { color: #0066cc; }
+.nav-cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #0066cc; color: #fff !important; font-size: 13px; font-weight: 600;
+    padding: 8px 20px; text-decoration: none; letter-spacing: .3px;
+    transition: background .2s, box-shadow .2s !important;
+    white-space: nowrap;
+}
+.nav-cta:hover { background: #004e9e !important; box-shadow: 0 4px 12px rgba(0,102,204,.3); }
+@media (max-width: 960px) { .nav-cta { display: none; } }
 
 /* ===== HERO ===== */
 .hero {
@@ -245,6 +254,23 @@ body {
 .footer { padding: 36px 24px; background: #111; color: rgba(255,255,255,.4); font-size: 12px; }
 .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; }
 
+/* ===== PRODUCT CTA BANNER ===== */
+.product-cta {
+    margin-top: 48px; background: linear-gradient(135deg, #0055b3 0%, #0077e6 100%);
+    padding: 32px 40px; display: flex; align-items: center;
+    justify-content: space-between; gap: 24px; flex-wrap: wrap;
+}
+.product-cta-text strong { display: block; font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.product-cta-text span { font-size: 14px; color: rgba(255,255,255,.75); }
+.product-cta-btn {
+    flex-shrink: 0; display: inline-block;
+    background: #fff; color: #0055b3; font-size: 14px; font-weight: 700;
+    padding: 13px 32px; text-decoration: none;
+    transition: background .2s, color .2s, box-shadow .2s;
+    white-space: nowrap;
+}
+.product-cta-btn:hover { background: #e8f0ff; box-shadow: 0 4px 16px rgba(0,0,0,.15); }
+
 @media (max-width: 960px) {
     .nav-menu { display: none; }
     .hero h1 { font-size: 28px; }
@@ -273,6 +299,7 @@ body {
             <li><a href="#products">产品方案</a></li>
             <li><a href="#contact">联系我们</a></li>
         </ul>
+        <a href="#contact" class="nav-cta">免费咨询 →</a>
     </div>
 </nav>
 
@@ -447,6 +474,7 @@ body {
 
         <!-- 鼎信 Dinstar -->
         <div class="brand-section brand-anim">
+
             <div class="brand-hd">
                 <h3>Dinstar 鼎信</h3>
                 <span class="en">语音网关 · IPPBX · SBC</span>
@@ -469,11 +497,18 @@ body {
                     <div class="p-info"><div class="p-name">UC2000 IPPBX</div><div class="p-desc">企业融合通信平台，支持网关管理</div></div>
                 </div>
             </div>
+        </div><!-- end dinstar brand-section -->
+
+        <!-- CTA Banner -->
+        <div class="product-cta">
+            <div class="product-cta-text">
+                <strong>不确定哪款产品适合您的场景？</strong>
+                <span>告诉我们您的需求，我们提供免费方案设计与选型建议</span>
+            </div>
+            <a href="#contact" class="product-cta-btn">立即获取免费方案</a>
         </div>
     </div>
 </section>
-
-<!-- CLIENTS -->
 <section class="sec sec-gray page-reveal" id="clients">
     <div class="sec-inner page-reveal-inner">
         <div class="sec-head sec-head-center">
