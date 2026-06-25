@@ -8,7 +8,63 @@ const crypto = require('crypto');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-app.use(express.json());
+
+// ========== 安全基础配置 ==========
+app.use(express.json({ limit: '10kb' }));   // 限制请求体大小
+app.disable('x-powered-by');                 // 隐藏 Express 标识
+
+// ========== 简单速率限制 (内存) ==========
+const rateLimitMap = new Map();  // { ip: { count, resetAt } }
+function rateLimit(windowMs, max) {
+    return (req, res, next) => {
+        const ip = req.ip || req.connection.remoteAddress;
+        const now = Date.now();
+        let entry = rateLimitMap.get(ip);
+        if (!entry || now > entry.resetAt) {
+            entry = { count: 0, resetAt: now + windowMs };
+            rateLimitMap.set(ip, entry);
+        }
+        entry.count++;
+        res.setHeader('X-RateLimit-Limit', max);
+        res.setHeader('X-RateLimit-Remaining', Math.max(0, max - entry.count));
+        if (entry.count > max) {
+            return res.status(429).json({ error: '请求过于频繁，请稍后再试' });
+        }
+        next();
+    };
+}
+// 清理过期条目
+setInterval(() => {
+    const now = Date.now();
+    for (const [ip, entry] of rateLimitMap) {
+        if (now > entry.resetAt) rateLimitMap.delete(ip);
+    }
+}, 60000);
+
+// ========== 输入消毒 ==========
+function sanitize(str) {
+    if (typeof str !== 'string') return '';
+    return str.replace(/[<>\"\'`]/g, '').slice(0, 500);
+}
+
+// ========== 敏感文件拦截 (必须在静态文件之前) ==========
+const BLOCKED_PATHS = [
+    '/leads.json', '/server.js', '/package.json', '/package-lock.json',
+    '/.env', '/.git', '/node_modules'
+];
+app.use((req, res, next) => {
+    const url = req.path.toLowerCase();
+    for (const bp of BLOCKED_PATHS) {
+        if (url.startsWith(bp) || url === bp) {
+            return res.status(404).send('Not Found');
+        }
+    }
+    // 拒绝常见的扫描探测路径
+    if (/\.(php|asp|aspx|jsp|cgi|sql|bak|old|swp|env|git|svn)/.test(url)) {
+        return res.status(404).send('Not Found');
+    }
+    next();
+});
 
 const WX_KEY = '8d8dcf3c-8a04-4fc1-aede-d24f79f491fc';
 const WX_WEBHOOK = `https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=${WX_KEY}`;
@@ -57,8 +113,8 @@ function requireAdmin(req, res, next) {
 
 // ========== Auth API ==========
 
-// 登录
-app.post('/api/login', (req, res) => {
+// 登录 (速率限制: 5次/分钟/IP)
+app.post('/api/login', rateLimit(60000, 5), (req, res) => {
     const { username, password } = req.body;
     const u = USERS[username];
     if (!u || u.password !== password) {
@@ -157,16 +213,16 @@ app.delete('/api/lead/:id', requireAuth, requireAdmin, (req, res) => {
     res.json({ success: true, deleted: removed.id });
 });
 
-// ========== 表单提交 ==========
-app.post('/api/contact', async (req, res) => {
+// ========== 表单提交 (速率限制: 3次/分钟/IP) ==========
+app.post('/api/contact', rateLimit(60000, 3), async (req, res) => {
     try {
         const body = req.body;
-        const time = body.time || new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
-        const name = body.name || '未填';
-        const company = body.company || '未填';
-        const phone = body.phone || '--';
-        const interest = body.interest || '未选择';
-        const msgText = body.message || '无';
+        const time = sanitize(body.time) || new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+        const name = sanitize(body.name) || '未填';
+        const company = sanitize(body.company) || '未填';
+        const phone = sanitize(body.phone) || '--';
+        const interest = sanitize(body.interest) || '未选择';
+        const msgText = sanitize(body.message) || '无';
 
         const leadId = genId();
         const lead = {
@@ -174,8 +230,8 @@ app.post('/api/contact', async (req, res) => {
             name,
             company,
             phone,
-            position: body.position || '',
-            email: body.email || '',
+            position: sanitize(body.position) || '',
+            email: sanitize(body.email) || '',
             interest,
             message: msgText,
             status: '待联系',
