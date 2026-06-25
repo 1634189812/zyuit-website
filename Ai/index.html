@@ -202,36 +202,91 @@ body {
 .adv-cell p { font-size: 13px; color: #888; line-height: 1.7; position: relative; z-index: 1; }
 
 /* ===== CONTACT ===== */
-.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
 .contact-l { opacity: 0; transform: translateX(-30px); }
 .contact-r { opacity: 0; transform: translateX(30px); }
-.contact-l h3 { font-size: 22px; font-weight: 700; color: #000; margin-bottom: 16px; }
-.contact-l > p { font-size: 14px; color: #777; margin-bottom: 28px; }
-.ci { display: flex; gap: 12px; margin-bottom: 16px; font-size: 14px; color: #555; }
-.ci strong { display: block; font-size: 11px; color: #aaa; font-weight: 500; margin-bottom: 2px; }
-.ci-qr { cursor: pointer; color: #0066cc; transition: color .2s; }
-.ci-qr:hover { color: #004499; text-decoration: underline; }
+.contact-l h3 { font-size: 24px; font-weight: 700; color: #000; margin-bottom: 12px; }
+.contact-l > p { font-size: 14px; color: #777; margin-bottom: 28px; line-height: 1.7; }
 
-/* ===== MODAL ===== */
+/* Contact info cards */
+.contact-info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.ci-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #e8ecf2;
+    transition: all .25s ease;
+}
+.ci-card:hover {
+    border-color: #0066cc;
+    box-shadow: 0 4px 16px rgba(0,102,204,.08);
+    transform: translateY(-1px);
+}
+.ci-icon {
+    flex-shrink: 0;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #eef4ff, #dbeeff);
+    border-radius: 10px;
+    font-size: 18px;
+}
+.ci-body { flex: 1; min-width: 0; }
+.ci-label { display: block; font-size: 11px; color: #aaa; font-weight: 500; margin-bottom: 3px; letter-spacing: .5px; }
+.ci-value { font-size: 15px; color: #222; font-weight: 500; word-break: break-all; }
+.ci-value a { color: #0066cc; text-decoration: none; transition: color .2s; }
+.ci-value a:hover { color: #004e9e; text-decoration: underline; }
+.ci-qr-trigger {
+    cursor: pointer; color: #0066cc; font-size: 13px; font-weight: 600;
+    transition: all .2s; display: inline-flex; align-items: center; gap: 4px;
+}
+.ci-qr-trigger:hover { color: #004e9e; text-decoration: underline; }
+.ci-qr-badge {
+    display: inline-block;
+    background: #eef7ff;
+    color: #0066cc;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+/* ===== MODAL — 企业微信名片 ===== */
 .modal-overlay {
     display: none; position: fixed; inset: 0; z-index: 9999;
-    background: rgba(0,0,0,.6); align-items: center; justify-content: center;
+    background: rgba(0,0,0,.5); align-items: center; justify-content: center;
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
 }
-.modal-overlay.show { display: flex; }
+.modal-overlay.show { display: flex; animation: modalFadeIn .25s ease; }
+@keyframes modalFadeIn { from{opacity:0} to{opacity:1} }
 .modal-box {
-    background: #fff; border-radius: 12px; padding: 36px 40px 28px;
-    text-align: center; max-width: 360px; width: 90%; position: relative;
-    box-shadow: 0 16px 48px rgba(0,0,0,.2);
+    background: transparent; border-radius: 16px;
+    max-width: 380px; width: 88%; position: relative;
+    box-shadow: 0 24px 64px rgba(0,0,0,.25);
+    animation: modalPopIn .35s cubic-bezier(.34,1.56,.64,1);
 }
-.modal-box img { width: 240px; border-radius: 6px; }
-.modal-box .modal-title { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 4px; }
-.modal-box .modal-sub { font-size: 13px; color: #888; margin-bottom: 20px; }
-.modal-close {
-    position: absolute; top: 12px; right: 14px;
-    background: none; border: none; font-size: 22px; color: #999;
-    cursor: pointer; line-height: 1; transition: color .2s;
+@keyframes modalPopIn { from{opacity:0; transform:scale(.9) translateY(20px)} to{opacity:1; transform:scale(1) translateY(0)} }
+.modal-box img {
+    width: 100%; border-radius: 12px;
+    display: block;
 }
-.modal-close:hover { color: #333; }
+.modal-close-outer {
+    position: absolute; top: -40px; right: -8px;
+    background: rgba(255,255,255,.95); border: none;
+    width: 32px; height: 32px; border-radius: 50%;
+    font-size: 20px; color: #666;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,.15);
+    transition: all .2s;
+}
+.modal-close-outer:hover { background: #fff; color: #333; transform: scale(1.1); }
 .cf { display: flex; flex-direction: column; gap: 12px; }
 .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .cf input, .cf textarea, .cf select {
@@ -280,6 +335,8 @@ body {
     .adv-grid { grid-template-columns: repeat(2, 1fr); }
     .adv-cell { border-right: none; padding: 24px 20px; }
     .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    .ci-card { padding: 14px 16px; gap: 12px; }
+    .ci-icon { width: 36px; height: 36px; font-size: 16px; }
 }
 @media (max-width: 600px) {
     .p-grid { grid-template-columns: 1fr 1fr; }
@@ -546,11 +603,43 @@ body {
             <div class="contact-l contact-l-anim">
                 <h3>联系我们</h3>
                 <p>如需方案咨询或预约演示，请留下联系方式，我们将在 24 小时内与您联系。</p>
-                <div class="ci"><strong>总部地址</strong>江苏省</div>
-                <div class="ci"><strong>服务热线</strong>15366839578</div>
-                <div class="ci"><strong>联系人</strong>张文龙</div>
-                <div class="ci"><strong>商务邮箱</strong>wlzhang@zyuit.cn</div>
-                <div class="ci"><strong>企业微信</strong><span class="ci-qr" onclick="openQr()">@云科网数（点击扫码添加）</span></div>
+                <div class="contact-info-list">
+                    <div class="ci-card">
+                        <div class="ci-icon">📍</div>
+                        <div class="ci-body">
+                            <span class="ci-label">总部地址</span>
+                            <span class="ci-value">江苏省</span>
+                        </div>
+                    </div>
+                    <div class="ci-card">
+                        <div class="ci-icon">📞</div>
+                        <div class="ci-body">
+                            <span class="ci-label">服务热线</span>
+                            <span class="ci-value"><a href="tel:15366839578">15366839578</a></span>
+                        </div>
+                    </div>
+                    <div class="ci-card">
+                        <div class="ci-icon">👤</div>
+                        <div class="ci-body">
+                            <span class="ci-label">联系人</span>
+                            <span class="ci-value">张文龙 · 渠道总监</span>
+                        </div>
+                    </div>
+                    <div class="ci-card">
+                        <div class="ci-icon">✉️</div>
+                        <div class="ci-body">
+                            <span class="ci-label">商务邮箱</span>
+                            <span class="ci-value"><a href="mailto:wlzhang@zyuit.cn">wlzhang@zyuit.cn</a></span>
+                        </div>
+                    </div>
+                    <div class="ci-card" style="cursor:pointer;border-color:#0066cc;background:linear-gradient(135deg,#f0f7ff,#eef6ff);" onclick="openQr()">
+                        <div class="ci-icon" style="background:linear-gradient(135deg,#0066cc,#3388dd);color:#fff;">💬</div>
+                        <div class="ci-body">
+                            <span class="ci-label" style="color:#0066cc;">企业微信</span>
+                            <span class="ci-value"><span class="ci-qr-trigger">@云科网数 <span class="ci-qr-badge">点击查看名片 →</span></span></span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <form class="cf contact-r contact-r-anim" id="contactForm">
                 <div class="cf-row">
@@ -588,10 +677,8 @@ body {
 <!-- 企业微信二维码弹窗 -->
 <div class="modal-overlay" id="qrModal" onclick="closeQr(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
-        <button class="modal-close" onclick="closeQr()">&times;</button>
-        <div class="modal-title">扫码添加企业微信</div>
-        <div class="modal-sub">江苏云科网数 · 张文龙</div>
-        <img src="images/wechat-qr.jpg" alt="企业微信二维码">
+        <button class="modal-close-outer" onclick="closeQr()">&times;</button>
+        <img src="images/wechat-contact.jpg" alt="企业微信名片 · 张文龙">
     </div>
 </div>
 
