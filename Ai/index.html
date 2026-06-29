@@ -293,25 +293,6 @@ body {
 }
 .modal-close-outer:hover { background: rgba(0,0,0,.75); transform: scale(1.1); }
 
-/* ===== 页面更新提示条 ===== */
-.update-banner {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 9998;
-    background: linear-gradient(135deg, #1a5fb4, #0066cc);
-    color: #fff; text-align: center; padding: 10px 16px;
-    font-size: 14px; font-weight: 500;
-    transform: translateY(-100%);
-    transition: transform .35s cubic-bezier(.4,0,.2,1);
-    box-shadow: 0 2px 12px rgba(26,95,180,.25);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.update-banner.visible { transform: translateY(0); }
-.update-banner .refresh-icon {
-    display: inline-block; width: 16px; height: 16px;
-    border: 2px solid #fff; border-top-color: transparent;
-    border-radius: 50%; animation: spin .8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
 .cf { display: flex; flex-direction: column; gap: 12px; }
 .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .cf input, .cf textarea, .cf select {
@@ -960,47 +941,30 @@ function closeQr(e) {
     document.body.style.overflow = '';
 }
 
-// ===== 版本更新检测 =====
+// ===== 版本更新检测（静默自动刷新）=====
 (function checkVersion() {
     var currentVersion = document.querySelector('meta[name="version"]');
     currentVersion = currentVersion ? currentVersion.getAttribute('content') : '0';
-    var banner = document.createElement('div');
-    banner.className = 'update-banner';
-    banner.innerHTML = '<span class="refresh-icon"></span> 网站已更新，点击刷新查看最新内容';
-    banner.onclick = function() { location.reload(true); };
-    document.body.appendChild(banner);
-
-    var lastCheck = Date.now();
-    var timer;
 
     function poll() {
-        timer = setTimeout(function() {
+        setTimeout(function() {
             fetch('/version.json?t=' + Date.now())
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
-                    lastCheck = Date.now();
                     if (data.version && data.version !== currentVersion) {
-                        banner.classList.add('visible');
+                        // 检测到新版本，直接静默刷新
+                        location.reload(true);
+                    } else {
+                        poll(); // 未更新，继续轮询
                     }
                 })
                 .catch(function() {
-                    // 忽略轮询失败
+                    poll(); // 请求失败，继续重试
                 });
-            timer = setTimeout(poll, 300000); // 5分钟检查一次
-        }, 5000); // 首次延迟5秒
+        }, 300000); // 每5分钟检查一次
     }
 
-    // 用户有交互后再开始轮询（减少不必要的请求）
-    var started = false;
-    function startOnce() {
-        if (started) return;
-        started = true;
-        poll();
-        window.removeEventListener('scroll', startOnce);
-        window.removeEventListener('click', startOnce);
-    }
-    window.addEventListener('scroll', startOnce, {once: true});
-    window.addEventListener('click', startOnce, {once: true});
+    poll();
 })();
 </script>
 
