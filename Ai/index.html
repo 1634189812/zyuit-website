@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="version" content="20260629-01">
 <title>云科网数 — 专业音视频通信解决方案提供商</title>
 <link rel="icon" type="image/png" href="favicon.webp">
 <!-- GSAP + ScrollTrigger -->
@@ -941,31 +940,6 @@ function closeQr(e) {
     document.body.style.overflow = '';
 }
 
-// ===== 版本更新检测（静默自动刷新）=====
-(function checkVersion() {
-    var currentVersion = document.querySelector('meta[name="version"]');
-    currentVersion = currentVersion ? currentVersion.getAttribute('content') : '0';
-
-    function poll() {
-        setTimeout(function() {
-            fetch('/version.json?t=' + Date.now())
-                .then(function(r) { return r.json(); })
-                .then(function(data) {
-                    if (data.version && data.version !== currentVersion) {
-                        // 检测到新版本，直接静默刷新
-                        location.reload(true);
-                    } else {
-                        poll(); // 未更新，继续轮询
-                    }
-                })
-                .catch(function() {
-                    poll(); // 请求失败，继续重试
-                });
-        }, 300000); // 每5分钟检查一次
-    }
-
-    poll();
-})();
 </script>
 
 </body>
