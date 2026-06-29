@@ -207,6 +207,28 @@ app.put('/api/lead/:id', requireAuth, (req, res) => {
     res.json({ success: true, lead });
 });
 
+// 批量删除线索（仅管理员）
+app.post('/api/leads/batch-delete', requireAuth, requireAdmin, (req, res) => {
+    const { ids } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({ error: '请提供要删除的线索ID列表' });
+    }
+    if (ids.length > 100) {
+        return res.status(400).json({ error: '单次最多删除100条' });
+    }
+    const removed = [];
+    leads = leads.filter(l => {
+        if (ids.includes(l.id)) {
+            removed.push(l.id);
+            return false;
+        }
+        return true;
+    });
+    saveLeads();
+    console.log(`Batch deleted by admin: ${removed.length} leads — ${removed.join(', ')}`);
+    res.json({ success: true, deleted: removed.length, ids: removed });
+});
+
 // 删除线索（仅管理员）
 app.delete('/api/lead/:id', requireAuth, requireAdmin, (req, res) => {
     const idx = leads.findIndex(l => l.id === req.params.id);
@@ -360,5 +382,5 @@ app.use(express.static(path.join(__dirname)));
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`Contact API: POST /api/contact`);
-    console.log(`Admin API:  GET /api/leads  |  PUT /api/lead/:id  |  DELETE /api/lead/:id`);
+    console.log(`Admin API:  GET /api/leads  |  PUT /api/lead/:id  |  DELETE /api/lead/:id  |  POST /api/leads/batch-delete`);
 });

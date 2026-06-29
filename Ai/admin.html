@@ -29,6 +29,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei","PingFang SC
 .filters select:focus,.filters input:focus{border-color:#1a5fb4;box-shadow:0 0 0 2px rgba(26,95,180,.15)}
 .btn-refresh{padding:6px 16px;background:#1a5fb4;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer}
 .btn-refresh:hover{background:#1552a0}
+.batch-bar{display:flex;align-items:center;gap:10px;padding-left:8px;border-left:2px solid #e0e0e0;margin-left:4px}
+.chk-all-label{font-size:13px;color:#555;display:flex;align-items:center;gap:4px;cursor:pointer}
+.chk-all-label input[type=checkbox]{width:16px;height:16px;cursor:pointer}
+.sel-count{font-size:12px;color:#e65100;font-weight:500;white-space:nowrap}
+.btn-batch-del{padding:6px 14px;background:#c62828;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer;white-space:nowrap}
+.btn-batch-del:hover{background:#b71c1c}
+.row-chk{width:16px;height:16px;cursor:pointer}
 .table-wrap{overflow-x:auto;background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 table{width:100%;border-collapse:collapse;min-width:1140px;font-size:13px}
 thead{background:#f8f9fb}
@@ -155,6 +162,11 @@ tr:nth-child(even):hover{background:#f0f4ff}
       </select>
       <input type="text" id="filterSearch" placeholder="搜索姓名/公司..." oninput="renderTable()">
       <button class="btn-refresh" onclick="loadData()">刷新</button>
+      <span class="batch-bar" id="batchBar" style="display:none">
+        <label class="chk-all-label"><input type="checkbox" id="selAll" onchange="toggleSelectAll()"> 全选</label>
+        <span class="sel-count" id="selCount">已选 0 条</span>
+        <button class="btn-batch-del" onclick="confirmBatchDelete()">批量删除</button>
+      </span>
     </div>
   </div>
 
@@ -190,8 +202,9 @@ function doLogin() {
         TOKEN = data.token;
         USER = { username: data.username, role: data.role, name: data.name };
         isAdmin = data.role === 'admin';
-        sessionStorage.setItem('admin_token', TOKEN);
-        sessionStorage.setItem('admin_user', JSON.stringify(USER));
+        localStorage.setItem('admin_token', TOKEN);
+        localStorage.setItem('admin_user', JSON.stringify(USER));
+        localStorage.setItem('admin_login_time', Date.now());
         document.getElementById('loginOverlay').style.display = 'none';
         document.getElementById('mainHeader').style.display = 'flex';
         document.getElementById('mainContainer').style.display = 'block';
@@ -210,7 +223,9 @@ function doLogout() {
         headers:{'x-auth-token':TOKEN}
     }).catch(()=>{});
     TOKEN = ''; USER = {}; leads = []; dirty = {}; isAdmin = false;
-    sessionStorage.clear();
+    localStorage.removeItem('admin_token');
+    localStorage.removeItem('admin_user');
+    localStorage.removeItem('admin_login_time');
     document.getElementById('loginOverlay').style.display = 'flex';
     document.getElementById('mainHeader').style.display = 'none';
     document.getElementById('mainContainer').style.display = 'none';
@@ -218,10 +233,12 @@ function doLogout() {
     document.getElementById('loginPass').value = '';
 }
 
-// 尝试自动恢复登录
+// 尝试自动恢复登录（1小时内有效）
 (function(){
-    const saved = sessionStorage.getItem('admin_token');
-    if(saved) {
+    const saved = localStorage.getItem('admin_token');
+    const loginTime = parseInt(localStorage.getItem('admin_login_time')||'0');
+    const ONE_HOUR = 3600000;
+    if(saved && (Date.now() - loginTime < ONE_HOUR)) {
         TOKEN = saved;
         fetch('/api/session?token='+TOKEN)
         .then(r => r.json().then(data => ({ok:r.ok, data})))
@@ -232,7 +249,15 @@ function doLogout() {
             document.getElementById('mainHeader').style.display = 'flex';
             document.getElementById('mainContainer').style.display = 'block';
             showUser(); loadData();
-        }).catch(() => { sessionStorage.clear(); });
+        }).catch(() => {
+            localStorage.removeItem('admin_token');
+            localStorage.removeItem('admin_user');
+            localStorage.removeItem('admin_login_time');
+        });
+    } else {
+        localStorage.removeItem('admin_token');
+        localStorage.removeItem('admin_user');
+        localStorage.removeItem('admin_login_time');
     }
 })();
 
@@ -293,7 +318,7 @@ function renderTable() {
         return;
     }
 
-    let html = '<table><thead><tr><th>编号</th><th>时间</th><th>姓名</th><th>公司</th><th>职位</th><th>电话</th><th>关注方向</th><th>需求</th><th>状态</th><th>进度</th><th>备注</th><th>操作</th></tr></thead><tbody>';
+    let html = '<table><thead><tr>' + (isAdmin ? '<th style="width:36px"><input type="checkbox" id="selAllHead" onchange="toggleSelectAll()" title="全选/取消"></th>' : '') + '<th>编号</th><th>时间</th><th>姓名</th><th>公司</th><th>职位</th><th>电话</th><th>关注方向</th><th>需求</th><th>状态</th><th>进度</th><th>备注</th><th>操作</th></tr></thead><tbody>';
 
     filtered.forEach(l => {
         const d = dirty[l.id] || {};
@@ -304,6 +329,7 @@ function renderTable() {
         const isDirty = dirty[l.id] !== undefined;
 
         html += `<tr${isDirty?' style="background:#fffde7"':''}>
+            ${isAdmin ? `<td><input type="checkbox" class="row-chk" data-id="${l.id}" onchange="onChkChange()"></td>` : ''}
             <td style="font-family:monospace;font-size:11px;color:#999">${l.id}</td>
             <td style="white-space:nowrap;font-size:12px">${timeLabel}</td>
             <td><b>${esc(l.name||'--')}</b></td>
@@ -326,6 +352,15 @@ function renderTable() {
 
     html += '</tbody></table>';
     document.getElementById('tableWrap').innerHTML = html;
+
+    // 管理员显示批量操作栏
+    if (isAdmin) {
+        document.getElementById('batchBar').style.display = 'flex';
+    } else {
+        document.getElementById('batchBar').style.display = 'none';
+    }
+    // 同步全选复选框状态
+    updateSelCount();
 }
 
 function showMsg(id) {
@@ -391,6 +426,76 @@ function confirmDelete(id, name, company) {
             loadData();
         } catch(e) {
             toast('删除失败','error');
+        }
+    };
+    overlay.onclick = e => { if(e.target===overlay) overlay.remove(); };
+}
+
+// ---- Batch Operations ----
+function onChkChange() {
+    updateSelCount();
+}
+
+function updateSelCount() {
+    const checked = document.querySelectorAll('.row-chk:checked');
+    const count = checked.length;
+    document.getElementById('selCount').textContent = `已选 ${count} 条`;
+    // Sync toolbar and header select-all checkboxes
+    const all = document.querySelectorAll('.row-chk');
+    const allChecked = all.length > 0 && count === all.length;
+    const selAll = document.getElementById('selAll');
+    const selAllHead = document.getElementById('selAllHead');
+    if (selAll) selAll.checked = allChecked;
+    if (selAllHead) selAllHead.checked = allChecked;
+    // Enable/disable batch delete button
+    const btn = document.querySelector('.btn-batch-del');
+    if (btn) btn.disabled = count === 0;
+}
+
+function toggleSelectAll() {
+    // Determine action by looking at current row checkbox state
+    const all = document.querySelectorAll('.row-chk');
+    const checked = document.querySelectorAll('.row-chk:checked');
+    const newState = all.length === 0 || checked.length < all.length;
+    document.querySelectorAll('.row-chk').forEach(chk => { chk.checked = newState; });
+    // Sync toolbar and table header checkboxes
+    const selAll = document.getElementById('selAll');
+    const selAllHead = document.getElementById('selAllHead');
+    if (selAll) selAll.checked = newState;
+    if (selAllHead) selAllHead.checked = newState;
+    updateSelCount();
+}
+
+function confirmBatchDelete() {
+    const checked = document.querySelectorAll('.row-chk:checked');
+    if (checked.length === 0) { toast('请先选择要删除的线索', 'error'); return; }
+    const ids = Array.from(checked).map(chk => chk.dataset.id);
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.innerHTML = `<div class="modal-box">
+        <h3>确认批量删除</h3>
+        <p>确定要删除选中的 <b>${ids.length}</b> 条线索吗？<br>此操作不可恢复。</p>
+        <div class="modal-btns">
+            <button class="btn-cancel" id="cancelBatchDel">取消</button>
+            <button class="btn-confirm" id="confirmBatchDel">确认删除</button>
+        </div>
+    </div>`;
+    document.body.appendChild(overlay);
+    document.getElementById('cancelBatchDel').onclick = () => overlay.remove();
+    document.getElementById('confirmBatchDel').onclick = async () => {
+        overlay.remove();
+        try {
+            const r = await fetch('/api/leads/batch-delete?token='+TOKEN, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ids})
+            });
+            if (!r.ok) { const d = await r.json(); throw new Error(d.error); }
+            const result = await r.json();
+            toast(`已删除 ${result.deleted} 条`, 'success');
+            loadData();
+        } catch(e) {
+            toast(e.message || '删除失败', 'error');
         }
     };
     overlay.onclick = e => { if(e.target===overlay) overlay.remove(); };
