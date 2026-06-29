@@ -354,6 +354,51 @@ app.post('/api/update-notify', (req, res) => {
     });
 });
 
+// ========== 版本号接口 (前端轮询检测更新) ==========
+const VERSION_FILE = path.join(__dirname, 'version.json');
+let cachedVersion = null;
+
+function readVersion() {
+    try {
+        const raw = fs.readFileSync(VERSION_FILE, 'utf8');
+        return JSON.parse(raw).version;
+    } catch (_) {
+        return '20260629-01'; // fallback
+    }
+}
+
+app.get('/version.json', (req, res) => {
+    // 不允许缓存
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    cachedVersion = readVersion();
+    res.json({ version: cachedVersion });
+});
+
+// 更新版本号 (部署时调用)
+app.post('/api/bump-version', (req, res) => {
+    const token = req.headers['x-deploy-token'] || req.body.token;
+    if (token !== DEPLOY_TOKEN) {
+        return res.status(403).json({ error: 'Invalid deploy token' });
+    }
+    const newVersion = req.body.version || generateVersion();
+    fs.writeFileSync(VERSION_FILE, JSON.stringify({ version: newVersion, updatedAt: new Date().toISOString() }, null, 2));
+    cachedVersion = newVersion;
+    console.log(`Version bumped to: ${newVersion}`);
+    res.json({ success: true, version: newVersion });
+});
+
+function generateVersion() {
+    const now = new Date();
+    return `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}-${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+}
+
+// 初始化版本文件
+if (!fs.existsSync(VERSION_FILE)) {
+    fs.writeFileSync(VERSION_FILE, JSON.stringify({ version: '20260629-01', updatedAt: new Date().toISOString() }, null, 2));
+}
+
 // ========== 静态文件 ==========
 app.use(express.static(path.join(__dirname)));
 
