@@ -69,6 +69,10 @@ app.use((req, res, next) => {
 const WX_KEY = '8d8dcf3c-8a04-4fc1-aede-d24f79f491fc';
 const WX_WEBHOOK = `https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=${WX_KEY}`;
 
+// 版本更新机器人
+const WX_UPDATE_KEY = '9cd12585-50fd-4cc5-ae56-601ccf9a53a0';
+const WX_UPDATE_WEBHOOK = `https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=${WX_UPDATE_KEY}`;
+
 // ========== User System ==========
 const USERS = {
     admin: { password: 'admin@123', role: 'admin', name: '管理员' },
@@ -294,6 +298,60 @@ app.post('/api/contact', rateLimit(60000, 3), async (req, res) => {
         console.error('Proxy error:', err.message);
         res.status(502).json({ success: false, error: '服务器代理请求失败' });
     }
+});
+
+// ========== 版本更新通知 (部署后触发) ==========
+const DEPLOY_TOKEN = 'zyuit-deploy-2025';
+
+app.post('/api/update-notify', (req, res) => {
+    // 验证部署令牌
+    const token = req.headers['x-deploy-token'] || req.body.token;
+    if (token !== DEPLOY_TOKEN) {
+        return res.status(403).json({ error: 'Invalid deploy token' });
+    }
+
+    const { version, summary, details, author } = req.body;
+
+    if (!summary) {
+        return res.status(400).json({ error: '缺少更新摘要 (summary)' });
+    }
+
+    const now = new Date();
+    const timeStr = now.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+    const ver = version || `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}-${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+
+    // 构建更新说明
+    let content = `##  云科网数官网 · 版本更新\n`;
+    content += `> 版本号：<font color=\"info\">${ver}</font>\n`;
+    content += `> 更新时间：${timeStr}\n`;
+    if (author) content += `> 操作人：${author}\n`;
+    content += `\n**更新内容：**\n${summary}\n`;
+    if (details) {
+        content += `\n**详细说明：**\n${details}\n`;
+    }
+    content += `\n[查看网站 →](http://146.56.231.87)`;
+
+    const payload = {
+        msgtype: 'markdown',
+        markdown: { content }
+    };
+
+    fetch(WX_UPDATE_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    }).then(r => r.json()).then(result => {
+        if (result.errcode === 0) {
+            console.log(`Update notification sent: ${ver}`);
+            res.json({ success: true, version: ver });
+        } else {
+            console.error('Update webhook error:', result);
+            res.status(502).json({ success: false, error: result.errmsg || 'Webhook rejected' });
+        }
+    }).catch(err => {
+        console.error('Update notify error:', err.message);
+        res.status(502).json({ success: false, error: '推送失败' });
+    });
 });
 
 // ========== 静态文件 ==========
