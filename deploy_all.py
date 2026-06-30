@@ -17,8 +17,10 @@ FILES_TO_DEPLOY = [
     'server.js',
 ]
 
-UPDATE_SUMMARY = """安全加固：SSH禁用密码登录仅允许密钥 + fail2ban封禁攻击IP + 更换高强度密码
-已封禁攻击者IP: 185.254.75.44, 81.69.102.196, 169.150.201.14"""
+UPDATE_SUMMARY = """安全加固：网站安全整改
+1. Nginx 隐藏版本号 + 安全响应头(X-Frame-Options/X-Content-Type-Options/X-XSS-Protection/Referrer-Policy)
+2. 后台管理员密码更换为强密码
+3. 服务器系统安全补丁已更新"""
 
 def main():
     key_path = os.path.expanduser('~/.ssh/id_ed25519_tencent')

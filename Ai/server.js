@@ -75,7 +75,7 @@ const WX_UPDATE_WEBHOOK = `https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=
 
 // ========== User System ==========
 const USERS = {
-    admin: { password: 'admin@123', role: 'admin', name: '管理员' },
+    admin: { password: 'Admin85@2007', role: 'admin', name: '管理员' },
     '01':   { password: 'admin@123', role: 'user',  name: '员工01' },
     '02':   { password: 'admin@123', role: 'user',  name: '员工02' }
 };
