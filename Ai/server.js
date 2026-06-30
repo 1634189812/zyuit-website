@@ -293,12 +293,12 @@ app.post('/api/contact', rateLimit(60000, 3), async (req, res) => {
                 ],
                 card_action: {
                     type: 1,
-                    url: 'http://146.56.231.87/admin.html'
+                    url: 'https://yunkct.com/admin.html'
                 },
                 jump_list: [{
                     type: 1,
                     title: '查看线索管理后台',
-                    url: 'http://146.56.231.87/admin.html'
+                    url: 'https://yunkct.com/admin.html'
                 }]
             }
         };
@@ -351,7 +351,7 @@ app.post('/api/update-notify', (req, res) => {
     if (details) {
         content += `\n**详细说明：**\n${details}\n`;
     }
-    content += `\n[查看网站 →](http://146.56.231.87)`;
+    content += `\n[查看网站 →](https://yunkct.com)`;
 
     const payload = {
         msgtype: 'markdown',

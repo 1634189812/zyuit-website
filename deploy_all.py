@@ -17,10 +17,9 @@ FILES_TO_DEPLOY = [
     'server.js',
 ]
 
-UPDATE_SUMMARY = """安全加固：网站安全整改
-1. Nginx 隐藏版本号 + 安全响应头(X-Frame-Options/X-Content-Type-Options/X-XSS-Protection/Referrer-Policy)
-2. 后台管理员密码更换为强密码
-3. 服务器系统安全补丁已更新"""
+UPDATE_SUMMARY = """修复线索管理后台访问问题
+1. server.js 中企微通知链接从 IP 改为域名 (https://yunkct.com)
+2. 线索管理后台请使用 https://yunkct.com/admin.html 访问（不再支持 IP 访问，SSL 证书仅绑定域名）"""
 
 def main():
     key_path = os.path.expanduser('~/.ssh/id_ed25519_tencent')
